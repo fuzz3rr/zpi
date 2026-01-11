@@ -336,3 +336,335 @@ Tomek zarządza 12-osobowym zespołem sprzedaży. Potrzebuje prostych narzędzi 
 | **ZZ-05** | System kalendarzowy (Google/Outlook)       | Manualnie uzgadniane terminy          |
 
 ---
+## 3. Wymagania Dotyczące Interfejsów Zewnętrznych
+
+### 3.1. Interfejsy Użytkownika (UI)
+
+#### Ogólne wytyczne projektowe
+
+**Styl wizualny:**
+- Design system oparty na Material Design 3
+- Kolorystyka: niebieski (#1976D2) jako primary, szary (#424242) jako secondary
+- Typografia: Inter dla UI, system fonts jako fallback
+- Responsywność: Mobile-first, breakpoints: 320px, 768px, 1024px, 1440px
+
+**Zasady UX:**
+- Maksymalnie 3 kliknięcia do najważniejszych akcji
+- Jasne komunikaty błędów z sugestią rozwiązania
+- Skeleton loaders zamiast spinnerów
+- Wsparcie dla dark mode
+- Dostępność WCAG 2.1 AA
+
+#### Makiety głównego przypadku użycia: Aplikowanie na ofertę
+
+**Ekran 1: Lista ofert pracy (widok kandydata)**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  🔍 [Szukaj stanowiska...]        📍 Lokalizacja ▼   🎯 Filtruj │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ 💼 Senior Python Developer              📍 Warszawa     │   │
+│  │    TechCorp Sp. z o.o.                  💰 18-24k PLN  │   │
+│  │    Python • FastAPI • PostgreSQL        📅 do 15.01    │   │
+│  │    [Zobacz szczegóły]              [⭐ Zapisz]        │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ 💼 HR Business Partner                  📍 Kraków       │   │
+│  │    BigFactory S.A.                      💰 12-15k PLN  │   │
+│  │    HR • Rekrutacja • HRIS               📅 do 20.01    │   │
+│  │    [Zobacz szczegóły]              [⭐ Zapisz]        │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ 💼 Junior Frontend Developer            📍 Remote       │   │
+│  │    StartupXYZ                           💰 8-12k PLN   │   │
+│  │    React • TypeScript • CSS             📅 do 10.01    │   │
+│  │    [Zobacz szczegóły]              [⭐ Zapisz]        │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  [Pokaż więcej ofert...]                                       │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Ekran 2: Szczegóły oferty**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  ← Wróć do listy                                               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  💼 Senior Python Developer                                    │
+│  ═══════════════════════════════════════                       │
+│                                                                 │
+│  TechCorp Sp. z o.o.    📍 Warszawa (hybrydowo)               │
+│  💰 18 000 - 24 000 PLN netto (B2B)                           │
+│  📅 Rekrutacja do: 15 stycznia 2025                           │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ Dopasowanie do Twojego profilu: ████████████░░ 78%      │   │
+│  │ ✓ Python (Twój poziom: Expert)                          │   │
+│  │ ✓ FastAPI (Twój poziom: Mid)                            │   │
+│  │ ⚠ Kubernetes (brak w profilu)                           │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  📋 OPIS STANOWISKA                                            │
+│  Szukamy doświadczonego Python Developera do zespołu          │
+│  platformy płatniczej. Będziesz pracować nad...               │
+│  [Pokaż więcej...]                                             │
+│                                                                 │
+│  🎯 WYMAGANIA                                                   │
+│  • 5+ lat doświadczenia z Python                              │
+│  • Znajomość FastAPI lub Django                                │
+│  • Doświadczenie z PostgreSQL                                  │
+│  • Mile widziane: Kubernetes, AWS                              │
+│                                                                 │
+│  🎁 OFERUJEMY                                                   │
+│  • Praca hybrydowa (2 dni w biurze)                            │
+│  • Budżet szkoleniowy 5000 PLN/rok                             │
+│  • Prywatna opieka medyczna                                    │
+│                                                                 │
+│  ┌───────────────────────────────────────────────────────────┐ │
+│  │  [     📤 APLIKUJ TERAZ     ]    [⭐ Zapisz] [📤 Udostępnij] │ │
+│  └───────────────────────────────────────────────────────────┘ │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Ekran 3: Formularz aplikacji**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  ← Wróć do oferty                                              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  📤 Aplikujesz na: Senior Python Developer                     │
+│     TechCorp Sp. z o.o.                                        │
+│  ═══════════════════════════════════════                       │
+│                                                                 │
+│  📄 TWOJE CV                                                    │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ ✓ Jan_Kowalski_CV_2024.pdf                              │   │
+│  │   Dodane: 10.12.2024    [Zmień CV]                      │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  📝 LIST MOTYWACYJNY (opcjonalnie)                             │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │                                                          │   │
+│  │  Napisz kilka słów o sobie i dlaczego                   │   │
+│  │  interesujesz się tą ofertą...                          │   │
+│  │                                                          │   │
+│  │                                                          │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                             0/2000 znaków      │
+│                                                                 │
+│  💰 OCZEKIWANIA FINANSOWE                                      │
+│  [    15000    ] PLN netto/mies.                               │
+│                                                                 │
+│  📅 DOSTĘPNOŚĆ                                                  │
+│  ○ Natychmiast                                                 │
+│  ● 2 tygodnie                                                  │
+│  ○ 1 miesiąc                                                   │
+│  ○ Inna: [________]                                            │
+│                                                                 │
+│  ☑ Wyrażam zgodę na przetwarzanie danych osobowych...         │
+│  ☑ Chcę otrzymywać podobne oferty pracy                       │
+│                                                                 │
+│  ┌───────────────────────────────────────────────────────────┐ │
+│  │         [     ✓ WYŚLIJ APLIKACJĘ     ]                   │ │
+│  └───────────────────────────────────────────────────────────┘ │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Ekran 4: Potwierdzenie i status**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│                         ✓                                       │
+│                                                                 │
+│              Twoja aplikacja została wysłana!                  │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │                                                          │   │
+│  │  Senior Python Developer @ TechCorp                      │   │
+│  │                                                          │   │
+│  │  Status: ● WYSŁANA                                       │   │
+│  │  Data aplikacji: 12.12.2024, 14:32                       │   │
+│  │                                                          │   │
+│  │  ═══════════════════════════════════════                 │   │
+│  │  ● Wysłana  →  ○ W ocenie  →  ○ Rozmowa  →  ○ Decyzja   │   │
+│  │  ═══════════════════════════════════════                 │   │
+│  │                                                          │   │
+│  │  Rekruter skontaktuje się z Tobą w ciągu 5 dni          │   │
+│  │  roboczych. Włącz powiadomienia, żeby nie przegapić     │   │
+│  │  wiadomości!                                             │   │
+│  │                                                          │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  [🔔 Włącz powiadomienia]    [📋 Moje aplikacje]    [🏠 Start] │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 3.2. Interfejsy Programowe (API)
+
+#### Integracje zewnętrzne
+
+System HRflow integruje się z następującymi systemami zewnętrznymi:
+
+**Integracje wymagane (MVP):**
+
+| System | Typ integracji | Cel | Protokół |
+|--------|----------------|-----|----------|
+| **Active Directory / LDAP** | Outbound | SSO, zarządzanie dostępami | LDAP/LDAPS |
+| **SMTP Server** | Outbound | Wysyłka powiadomień email | SMTP/TLS |
+| **Google Calendar / Outlook 365** | Bidirectional | Umawianie spotkań rekrutacyjnych | OAuth2 + REST API |
+| **Dostawca e-podpisu** | Outbound | Podpisywanie umów | REST API (webhook) |
+
+**Integracje planowane (post-MVP):**
+
+| System | Typ integracji | Cel | Protokół |
+|--------|----------------|-----|----------|
+| **LinkedIn** | Outbound | Publikacja ofert, import profili | OAuth2 + REST API |
+| **Facebook Jobs** | Outbound | Publikacja ofert | REST API |
+| **Slack / MS Teams** | Bidirectional | Powiadomienia, feedback | Webhooks + Bot API |
+| **Jira / Confluence** | Outbound | Onboarding developerów | REST API |
+| **GitHub / GitLab** | Outbound | Onboarding, dostępy do repo | OAuth2 + REST API |
+| **System payroll** | Outbound | Eksport danych pracowników | REST API / SFTP |
+
+#### Specyfikacja API - przykład endpointów rekrutacji
+
+**POST /api/v1/applications**
+Złożenie aplikacji na ofertę
+
+```json
+// Request
+{
+  "job_offer_id": "uuid",
+  "cv_file_id": "uuid",
+  "cover_letter": "string (optional)",
+  "expected_salary": 15000,
+  "availability": "2_weeks",
+  "consents": {
+    "data_processing": true,
+    "marketing": false
+  }
+}
+
+// Response 201 Created
+{
+  "application_id": "uuid",
+  "status": "SUBMITTED",
+  "submitted_at": "2024-12-12T14:32:00Z",
+  "estimated_response_days": 5
+}
+```
+
+**GET /api/v1/applications/{id}/status**
+Pobranie statusu aplikacji
+
+```json
+// Response 200 OK
+{
+  "application_id": "uuid",
+  "job_offer": {
+    "id": "uuid",
+    "title": "Senior Python Developer",
+    "company": "TechCorp Sp. z o.o."
+  },
+  "status": "IN_REVIEW",
+  "status_history": [
+    {"status": "SUBMITTED", "at": "2024-12-12T14:32:00Z"},
+    {"status": "IN_REVIEW", "at": "2024-12-13T09:15:00Z"}
+  ],
+  "next_step": "Oczekuj na kontakt rekrutera"
+}
+```
+
+**Webhook - zmiana statusu aplikacji**
+
+```json
+// POST na URL skonfigurowany przez kandydata
+{
+  "event": "application.status_changed",
+  "application_id": "uuid",
+  "old_status": "IN_REVIEW",
+  "new_status": "INTERVIEW_SCHEDULED",
+  "timestamp": "2024-12-14T10:00:00Z",
+  "details": {
+    "interview_date": "2024-12-18T14:00:00Z",
+    "interview_type": "VIDEO"
+  }
+}
+```
+
+#### Integracja z Active Directory
+
+```yaml
+# Konfiguracja LDAP
+ldap:
+  server: ldap://ad.company.local
+  port: 636
+  use_ssl: true
+  bind_dn: cn=hrflow-service,ou=ServiceAccounts,dc=company,dc=local
+  base_dn: ou=Users,dc=company,dc=local
+  
+  # Mapowanie atrybutów
+  attribute_mapping:
+    username: sAMAccountName
+    email: mail
+    first_name: givenName
+    last_name: sn
+    department: department
+    manager: manager
+
+  # Synchronizacja grup
+  group_sync:
+    enabled: true
+    hrflow_admins: CN=HRFlow-Admins,OU=Groups,DC=company,DC=local
+    hrflow_managers: CN=HRFlow-Managers,OU=Groups,DC=company,DC=local
+```
+
+#### Integracja z kalendarzem (Google Calendar)
+
+```python
+# Przykład użycia Google Calendar API
+from googleapiclient.discovery import build
+
+def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_minutes=60):
+    """
+    Tworzy wydarzenie w kalendarzu rekrutera i wysyła zaproszenie kandydatowi
+    """
+    event = {
+        'summary': f'Rozmowa rekrutacyjna - {candidate_name}',
+        'location': 'Google Meet (link zostanie wygenerowany)',
+        'start': {'dateTime': datetime_utc, 'timeZone': 'Europe/Warsaw'},
+        'end': {'dateTime': end_datetime_utc, 'timeZone': 'Europe/Warsaw'},
+        'attendees': [
+            {'email': candidate_email},
+            {'email': recruiter_email}
+        ],
+        'conferenceData': {
+            'createRequest': {'requestId': str(uuid4())}
+        },
+        'reminders': {
+            'useDefault': False,
+            'overrides': [
+                {'method': 'email', 'minutes': 24 * 60},
+                {'method': 'popup', 'minutes': 30}
+            ]
+        }
+    }
+    
+    return calendar_service.events().insert(
+        calendarId='primary',
+        body=event,
+        conferenceDataVersion=1,
+        sendUpdates='all'
+    ).execute()
+```
