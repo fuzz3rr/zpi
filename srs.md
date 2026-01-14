@@ -668,3 +668,279 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
         sendUpdates='all'
     ).execute()
 ```
+
+---
+
+## 4. Wymagania Funkcjonalne
+
+### 4.1. Moduł Rekrutacji
+
+#### WF-REK-001: Automatyczny Screening CV
+
+**Opis:** System automatycznie analizuje przesłane CV, wydobywa kluczowe informacje (kompetencje, doświadczenie, wykształcenie) i ocenia dopasowanie kandydata do oferty.
+
+**Historyjka Użytkownika:**
+> Jako rekruter,  
+> chcę aby system automatycznie analizował napływające CV i pokazywał mi ranking dopasowania,  
+> abym mógł skupić się na najlepiej rokujących kandydatach zamiast ręcznie przeglądać setki dokumentów.
+
+**Cel Biznesowy:** Skrócenie Time-to-Hire z 45 do 20 dni poprzez automatyzację wstępnej selekcji. Obsłużenie 2x więcej kandydatów bez zwiększania zespołu HR.
+
+**Warunki Wstępne:**  
+- Oferta pracy jest opublikowana w systemie  
+- Kandydat przesłał CV w formacie PDF/DOCX
+
+**Warunki Końcowe:**  
+- CV jest sparsowane i informacje zapisane w profilu kandydata  
+- Kandydat ma przypisany score dopasowania do oferty  
+- Rekruter widzi kandydata na liście z informacją o dopasowaniu
+
+**Kryteria Akceptacji:**
+
+**WF-REK-001-01: Pomyślne parsowanie CV (Scenariusz główny)**  
+- **Given:** Kandydat przesłał CV w formacie PDF zawierające sekcje: dane kontaktowe, doświadczenie, umiejętności, wykształcenie  
+- **When:** System przetwarza przesłany plik  
+- **Then:** W profilu kandydata zapisane są: imię, nazwisko, email, telefon, lista stanowisk z datami, lista umiejętności  
+- **And:** Czas parsowania nie przekracza 10 sekund  
+- **And:** Kandydat widzi podgląd wyekstrahowanych danych z możliwością korekty
+
+**WF-REK-001-02: Scoring dopasowania kandydata (Scenariusz główny)**  
+- **Given:** CV kandydata zostało sparsowane, oferta ma zdefiniowane wymagane i opcjonalne kompetencje  
+- **When:** System oblicza dopasowanie kandydata  
+- **Then:** Kandydat otrzymuje score 0-100% z rozbiciem na kategorie (umiejętności techniczne, doświadczenie, wykształcenie)  
+- **And:** Rekruter widzi wizualnie które wymagania kandydat spełnia, a których nie
+
+**WF-REK-001-03: CV w nieobsługiwanym formacie (Scenariusz alternatywny)**  
+- **Given:** Kandydat próbuje przesłać CV w formacie innym niż PDF/DOCX (np. JPG, TXT)  
+- **When:** Kliknie "Prześlij CV"  
+- **Then:** System wyświetla komunikat "Akceptujemy tylko pliki PDF i DOCX. Proszę zapisać CV w jednym z tych formatów."  
+- **And:** Plik nie jest przesyłany
+
+**WF-REK-001-04: CV uszkodzone lub nieczytelne (Scenariusz wyjątkowy)**  
+- **Given:** Kandydat przesłał plik PDF który jest uszkodzony lub zawiera tylko obrazy bez warstwy tekstowej  
+- **When:** System próbuje sparsować plik  
+- **Then:** System wyświetla komunikat "Nie udało się odczytać treści CV. Sprawdź czy plik nie jest uszkodzony i czy zawiera tekst (nie tylko obrazy)."  
+- **And:** Kandydat może przesłać plik ponownie  
+- **And:** Aplikacja trafia do kolejki do ręcznej weryfikacji przez rekrutera
+
+---
+
+#### WF-REK-002: Semantyczne Dopasowanie Kandydatów (Semantic Matching Engine)
+
+**Opis:** Silnik dopasowania rozpoznaje hierarchię i relacje między kompetencjami, np. wnioskuje że znajomość "DB2" implikuje znajomość "SQL", albo że "React Developer" zna "JavaScript".
+
+**Historyjka Użytkownika:**  
+> Jako rekruter,  
+> chcę aby system rozumiał że kandydat ze znajomością PostgreSQL prawdopodobnie zna też SQL,  
+> abym nie odrzucał wykwalifikowanych kandydatów tylko dlatego, że nie użyli dokładnie tych słów kluczowych co w ofercie.
+
+**Cel Biznesowy:** Zwiększenie Interview Acceptance Rate z 10% do 15% poprzez eliminację fałszywych odrzuceń.
+
+**Warunki Wstępne:**  
+- Zdefiniowana ontologia kompetencji (graf wiedzy)  
+- CV kandydata zostało sparsowane
+
+**Warunki Końcowe:**  
+- Score uwzględnia kompetencje pokrewne  
+- Rekruter widzi wyjaśnienie dlaczego kandydat pasuje/nie pasuje
+
+**Kryteria Akceptacji:**
+
+**WF-REK-002-01: Rozpoznanie kompetencji pokrewnych (Scenariusz główny)**  
+- **Given:** Oferta wymaga "SQL", kandydat ma w CV "PostgreSQL" i "Oracle DB"  
+- **When:** System oblicza dopasowanie  
+- **Then:** Wymaganie "SQL" jest oznaczone jako spełnione z adnotacją "Wykryte poprzez: PostgreSQL, Oracle DB"  
+- **And:** Score kandydata jest wyższy niż przy dosłownym porównaniu
+
+**WF-REK-002-02: Hierarchia frameworków (Scenariusz główny)**  
+- **Given:** Oferta wymaga "JavaScript", kandydat ma w CV tylko "React" i "Vue.js"  
+- **When:** System oblicza dopasowanie  
+- **Then:** Wymaganie "JavaScript" jest oznaczone jako spełnione z adnotacją "Wykryte poprzez: React, Vue.js"
+
+**WF-REK-002-03: Brak kompetencji i pokrewnych (Scenariusz alternatywny)**  
+- **Given:** Oferta wymaga "Kubernetes", kandydat nie ma żadnych kompetencji z obszaru container orchestration  
+- **When:** System oblicza dopasowanie  
+- **Then:** Wymaganie "Kubernetes" jest oznaczone jako niespełnione  
+- **And:** System sugeruje kandydatowi szkolenia z Kubernetes jeśli zaaplikuje
+
+---
+
+#### WF-REK-003: Portal Kandydata z Real-time Tracking
+
+**Opis:** Dedykowany portal dla kandydatów pozwalający śledzić status aplikacji w czasie rzeczywistym i otrzymywać automatyczny feedback.
+
+**Historyjka Użytkownika:**  
+> Jako kandydat,  
+> chcę widzieć na jakim etapie jest moja aplikacja bez konieczności dzwonienia do HR,  
+> abym miał kontrolę nad procesem i mógł planować swoje działania.
+
+**Cel Biznesowy:** Osiągnięcie Candidate NPS (cNPS) na poziomie +50 poprzez transparentność procesu.
+
+**Warunki Wstępne:**  
+- Kandydat złożył aplikację i ma konto w systemie  
+- Aplikacja ma przypisany status
+
+**Warunki Końcowe:**  
+- Kandydat widzi aktualny status  
+- Kandydat otrzymuje powiadomienie przy zmianie statusu
+
+**Kryteria Akceptacji:**
+
+**WF-REK-003-01: Podgląd statusu aplikacji (Scenariusz główny)**  
+- **Given:** Jestem zalogowany jako kandydat i mam 3 aktywne aplikacje  
+- **When:** Wchodzę na stronę "Moje aplikacje"  
+- **Then:** Widzę listę wszystkich moich aplikacji z aktualnym statusem (np. "Wysłana", "W ocenie", "Zaproszenie na rozmowę", "Odrzucona")  
+- **And:** Dla każdej aplikacji widzę timeline z historią zmian statusów i datami
+
+**WF-REK-003-02: Powiadomienie o zmianie statusu (Scenariusz główny)**  
+- **Given:** Moja aplikacja zmieniła status z "W ocenie" na "Zaproszenie na rozmowę"  
+- **When:** Rekruter zapisuje zmianę statusu  
+- **Then:** Otrzymuję powiadomienie email w ciągu 5 minut  
+- **And:** Widzę powiadomienie w portalu (czerwona kropka przy dzwoneczku)  
+- **And:** Jeśli mam aplikację mobilną, dostaję push notification
+
+**WF-REK-003-03: Automatyczny feedback przy odrzuceniu (Scenariusz główny)**  
+- **Given:** Moja aplikacja została odrzucona, rekruter wybrał powód odrzucenia  
+- **When:** Status zmienia się na "Odrzucona"  
+- **Then:** Otrzymuję spersonalizowany email z informacją o powodzie (bez szczegółów wrażliwych)  
+- **And:** Jeśli powód to brak kompetencji X, system sugeruje szkolenia z X
+
+**WF-REK-003-04: Aplikacja bez zmian przez 14 dni (Scenariusz wyjątkowy)**  
+- **Given:** Moja aplikacja jest w statusie "W ocenie" od 14 dni bez żadnych zmian  
+- **When:** Mija 14 dni  
+- **Then:** Otrzymuję automatyczny email "Twoja aplikacja jest nadal rozpatrywana. Dziękujemy za cierpliwość."  
+- **And:** Rekruter otrzymuje alert o zaległej aplikacji
+
+---
+
+#### WF-REK-004: Giełda Talentów (Internal Talent Marketplace)
+
+**Opis:** System automatycznie dopasowuje obecnych pracowników do nowych wakatów wewnętrznych na podstawie ich umiejętności i preferencji rozwojowych.
+
+**Historyjka Użytkownika:**  
+> Jako pracownik,  
+> chcę dostawać powiadomienia o wewnętrznych wakatach pasujących do moich umiejętności,  
+> abym mógł rozwijać karierę w obecnej firmie zamiast szukać pracy na zewnątrz.
+
+**Cel Biznesowy:** Wypełnienie 40% nowych wakatów kandydatami wewnętrznymi w ciągu 9 miesięcy.
+
+**Warunki Wstępne:**  
+- Pracownik ma uzupełniony profil umiejętności  
+- Istnieją otwarte wakaty wewnętrzne
+
+**Warunki Końcowe:**  
+- Pracownik widzi dopasowane oferty wewnętrzne  
+- Menedżer widzi zainteresowanych pracowników
+
+**Kryteria Akceptacji:**
+
+**WF-REK-004-01: Rekomendacje wakatów wewnętrznych (Scenariusz główny)**  
+- **Given:** Jestem pracownikiem z profilem zawierającym: Python (Expert), SQL (Advanced), 3 lata doświadczenia  
+- **And:** W firmie otwarto wakat "Senior Data Engineer" wymagający Python i SQL  
+- **When:** Otwieram sekcję "Możliwości rozwoju" w portalu  
+- **Then:** Widzę ten wakat z informacją o 85% dopasowania  
+- **And:** Widzę które moje kompetencje pasują, a czego mi brakuje
+
+**WF-REK-004-02: Aplikowanie na wakat wewnętrzny (Scenariusz główny)**  
+- **Given:** Znalazłem interesujący wakat wewnętrzny, mój bezpośredni przełożony skonfigurował zgodę na rekrutację wewnętrzną  
+- **When:** Klikam "Wyraź zainteresowanie"  
+- **Then:** Mój menedżer i HR otrzymują powiadomienie  
+- **And:** Rekruter prowadzący wakat widzi mnie na liście zainteresowanych z pełnym profilem
+
+**WF-REK-004-03: Brak zgody menedżera na rekrutację wewnętrzną (Scenariusz alternatywny)**  
+- **Given:** Mój bezpośredni przełożony ustawił blokadę rekrutacji wewnętrznej dla swojego zespołu  
+- **When:** Próbuję kliknąć "Wyraź zainteresowanie"  
+- **Then:** System wyświetla komunikat "Aplikowanie na wewnętrzne wakaty wymaga rozmowy z Twoim menedżerem. Skontaktuj się z HR jeśli chcesz omówić możliwości."
+
+---
+
+#### WF-REK-005: System Poleceń Pracowniczych (Employee Referral Engine)
+
+**Opis:** Gamifikowany system poleceń z transparentnym śledzeniem statusu i automatycznym naliczaniem nagród.
+
+**Historyjka Użytkownika:**
+> Jako pracownik,  
+> chcę polecać znajomych na otwarte stanowiska i widzieć status mojego polecenia,  
+> abym był motywowany do rekomendowania dobrych kandydatów.
+
+**Cel Biznesowy:** Zwiększenie udziału zatrudnień z poleceń z 8% do 25% w ciągu 9 miesięcy, skrócenie czasu zatrudnienia kandydatów z polecenia o 30%.
+
+**Warunki Wstępne:**  
+- Pracownik jest zatrudniony min. 3 miesiące  
+- Istnieją otwarte wakaty objęte programem poleceń
+
+**Warunki Końcowe:**  
+- Polecenie jest zarejestrowane  
+- Pracownik może śledzić status
+
+**Kryteria Akceptacji:**
+
+**WF-REK-005-01: Polecenie kandydata (Scenariusz główny)**  
+- **Given:** Jestem pracownikiem z 6-miesięcznym stażem, mam znajomego szukającego pracy  
+- **And:** Istnieje otwarty wakat "Frontend Developer" z bonusem za polecenie 5000 PLN  
+- **When:** Wchodzę w sekcję "Poleć znajomego", wybieram wakat i podaję dane znajomego (imię, email, opcjonalnie CV)  
+- **Then:** Znajomy otrzymuje spersonalizowany email z zaproszeniem do aplikowania  
+- **And:** Polecenie pojawia się w moim panelu "Moje polecenia" ze statusem "Wysłane zaproszenie"
+
+**WF-REK-005-02: Śledzenie statusu polecenia (Scenariusz główny)**  
+- **Given:** Poleciłem kandydata tydzień temu, kandydat złożył aplikację  
+- **When:** Wchodzę w "Moje polecenia"  
+- **Then:** Widzę aktualny status: "Kandydat aplikował → W ocenie → [następne etapy]"  
+- **And:** Widzę estymowaną datę decyzji i aktualny poziom mojego bonusu (np. "Bonus: 2500 PLN zablokowane, wypłata po okresie próbnym")
+
+**WF-REK-005-03: Automatyczne naliczenie bonusu (Scenariusz główny)**  
+- **Given:** Polecony kandydat został zatrudniony i ukończył 3-miesięczny okres próbny  
+- **When:** Mija data końca okresu próbnego  
+- **Then:** Mój bonus zmienia status na "Do wypłaty"  
+- **And:** Dział kadr otrzymuje automatyczne zlecenie wypłaty bonusu  
+- **And:** Dostaję powiadomienie "Gratulacje! Twój bonus za polecenie [imię] jest gotowy do wypłaty."
+
+**WF-REK-005-04: Polecenie osoby już w bazie (Scenariusz alternatywny)**  
+- **Given:** Próbuję polecić znajomego którego email już istnieje w bazie kandydatów  
+- **When:** Podaję jego email  
+- **Then:** System informuje "Ten kandydat jest już w naszej bazie. Jeśli chcesz powiązać polecenie, skontaktuj się z HR."
+
+---
+
+#### WF-REK-006: Anonimizacja Procesu Selekcji (Diversity & Inclusion)
+
+**Opis:** Mechanizm ukrywania danych mogących prowadzić do nieświadomych uprzedzeń (imię, zdjęcie, wiek, uczelnia) w fazie wstępnej selekcji.
+
+**Historyjka Użytkownika:**
+> Jako HR Manager,  
+> chcę mieć możliwość włączenia trybu anonimowego w procesie selekcji,  
+> abyśmy oceniali kandydatów tylko na podstawie kompetencji, nie danych demograficznych.
+
+**Cel Biznesowy:** Zwiększenie różnorodności kandydatów zapraszanych na rozmowy o 30% w ciągu 6 miesięcy.
+
+**Warunki Wstępne:**
+- HR Manager skonfigurował tryb anonimowy dla danego procesu rekrutacyjnego  
+- Kandydaci złożyli aplikacje
+
+**Warunki Końcowe:**
+- Rekruter ocenia kandydatów bez dostępu do danych wrażliwych  
+- Dane są ujawniane dopiero na etapie zaproszenia na rozmowę
+
+**Kryteria Akceptacji:**
+
+**WF-REK-006-01: Widok anonimowy dla rekrutera (Scenariusz główny)**  
+- **Given:** Jestem rekruterem, proces ma włączony tryb anonimowy  
+- **When:** Otwieram listę kandydatów  
+- **Then:** Zamiast imion widzę identyfikatory (np. "Kandydat #A7F3")  
+- **And:** Nie widzę: zdjęć, wieku, płci, nazw uczelni (tylko poziom wykształcenia)  
+- **And:** Widzę: listę kompetencji, lata doświadczenia (bez dat), opis doświadczenia
+
+**WF-REK-006-02: Ujawnienie danych przy zaproszeniu (Scenariusz główny)**  
+- **Given:** Zdecydowałem się zaprosić Kandydata #A7F3 na rozmowę  
+- **When:** Klikam "Zaproś na rozmowę"  
+- **Then:** System ujawnia pełne dane kandydata (imię, kontakt)  
+- **And:** Mogę teraz wysłać spersonalizowane zaproszenie
+
+**WF-REK-006-03: Analiza bias w ogłoszeniach (Scenariusz główny)**  
+- **Given:** Tworzę nowe ogłoszenie o pracę  
+- **When:** Zapisuję treść ogłoszenia  
+- **Then:** System analizuje tekst pod kątem language bias (np. agresywny język kojarzy się z męskimi kandydatami)  
+- **And:** Jeśli wykryje bias, sugeruje alternatywne sformułowania (np. "ninja" → "specjalista", "young dynamic team" → "energetic team")
+
+---
+
