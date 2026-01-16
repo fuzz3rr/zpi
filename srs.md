@@ -913,11 +913,11 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 
 **Cel Biznesowy:** Zwiększenie różnorodności kandydatów zapraszanych na rozmowy o 30% w ciągu 6 miesięcy.
 
-**Warunki Wstępne:**
+**Warunki Wstępne:**  
 - HR Manager skonfigurował tryb anonimowy dla danego procesu rekrutacyjnego  
 - Kandydaci złożyli aplikacje
 
-**Warunki Końcowe:**
+**Warunki Końcowe:**  
 - Rekruter ocenia kandydatów bez dostępu do danych wrażliwych  
 - Dane są ujawniane dopiero na etapie zaproszenia na rozmowę
 
@@ -944,3 +944,267 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 
 ---
 
+### 4.2. Moduł Onboardingu
+
+#### WF-ONB-001: Cyfrowy Obieg Dokumentów z E-podpisem
+
+**Opis:** W pełni elektroniczny proces podpisywania dokumentów zatrudnienia - umowy, NDA, regulaminy - bez konieczności drukowania i skanowania.
+
+**Historyjka Użytkownika:**  
+> Jako nowo zatrudniony pracownik,  
+> chcę podpisać wszystkie dokumenty elektronicznie przed pierwszym dniem pracy,  
+> abym w pierwszy dzień mógł skupić się na poznawaniu zespołu, a nie papierologii.
+
+**Cel Biznesowy:** Redukcja czasu pracy działu kadr na obsługę dokumentacji nowo zatrudnionych o 80% w ciągu 3 miesięcy.
+
+**Warunki Wstępne:**  
+- Kandydat zaakceptował ofertę pracy
+- HR przygotował pakiet dokumentów do podpisu
+
+**Warunki Końcowe:**  
+- Wszystkie dokumenty są podpisane elektronicznie
+- Dokumenty są zarchiwizowane w systemie
+- Dział kadr może wygenerować raport zgodności
+
+**Kryteria Akceptacji:**
+
+**WF-ONB-001-01: Podpisanie umowy elektronicznie (Scenariusz główny)**  
+- **Given:** Jestem nowo zatrudnionym pracownikiem, HR wysłał mi pakiet dokumentów do podpisu
+- **When:** Otwieram link z emaila, loguję się, przeglądam dokumenty i klikam "Podpisz"
+- **Then:** System wysyła mnie do dostawcy e-podpisu (np. Autenti)
+- **And:** Po złożeniu podpisu, wracam do HRflow gdzie widzę status "Podpisane"
+- **And:** Otrzymuję email z podpisanymi dokumentami w PDF
+
+**WF-ONB-001-02: Automatyczne generowanie umowy (Scenariusz główny)**  
+- **Given:** Jestem HR Adminem, kandydat Jan Kowalski zaakceptował ofertę na stanowisko Senior Developer z wynagrodzeniem 20 000 PLN B2B
+- **When:** Klikam "Generuj umowę" i wybieram szablon "Umowa B2B IT"
+- **Then:** System automatycznie wypełnia szablon danymi: imię, nazwisko, stanowisko, wynagrodzenie, data rozpoczęcia
+- **And:** Mogę przejrzeć dokument przed wysłaniem do podpisu
+- **And:** Dokument jest zapisany w formacie pozwalającym na e-podpis
+
+**WF-ONB-001-03: Przypomnienie o niepodpisanych dokumentach (Scenariusz alternatywny)**  
+- **Given:** Wysłano dokumenty do podpisu 3 dni temu, pracownik ich nie podpisał
+- **When:** Mija 72 godziny od wysłania
+- **Then:** System wysyła automatyczne przypomnienie do pracownika
+- **And:** HR widzi alert w panelu o zaległych dokumentach
+
+**WF-ONB-001-04: Wygaśnięcie linku do podpisu (Scenariusz wyjątkowy)**  
+- **Given:** Link do podpisu dokumentów był ważny 7 dni, pracownik próbuje go użyć po 10 dniach
+- **When:** Klika w stary link
+- **Then:** System wyświetla komunikat "Link wygasł. Skontaktuj się z działem HR aby otrzymać nowy link."
+- **And:** HR Admin może wygenerować nowy link jednym kliknięciem
+
+---
+
+#### WF-ONB-002: Zgrywalizowany Moduł Wdrożeniowy
+
+**Opis:** Interaktywny, zgrywalizowany program onboardingowy z zadaniami, quizami i śledzeniem postępów, zintegrowany z narzędziami deweloperskimi.
+
+**Historyjka Użytkownika:**  
+> Jako nowy programista,  
+> chcę mieć jasną ścieżkę onboardingu z konkretnymi zadaniami i celami,  
+> abym wiedział co mam robić i mógł mierzyć swój postęp.
+
+**Cel Biznesowy:** Skrócenie Time-to-Productivity nowych programistów z 3 miesięcy do 6 tygodni w ciągu roku.
+
+**Warunki Wstępne:**  
+- Pracownik rozpoczął pracę
+- HR/Menedżer przypisał odpowiednią ścieżkę onboardingu
+
+**Warunki Końcowe:**  
+- Pracownik ukończył wszystkie obowiązkowe moduły
+- Menedżer ma raport z postępów onboardingu
+
+**Kryteria Akceptacji:**
+
+**WF-ONB-002-01: Start programu onboardingowego (Scenariusz główny)**  
+- **Given:** Jestem nowym programistą, to mój pierwszy dzień pracy
+- **When:** Loguję się do HRflow
+- **Then:** Widzę spersonalizowaną ścieżkę onboardingową "Developer Onboarding" z etapami: Tydzień 1-2 (Podstawy), Tydzień 3-4 (Projekt), Tydzień 5-6 (Samodzielność)
+- **And:** Każdy etap ma konkretne zadania, materiały i quizy
+- **And:** Widzę progress bar pokazujący 0% ukończenia
+
+**WF-ONB-002-02: Wykonanie zadania onboardingowego (Scenariusz główny)**  
+- **Given:** Mam zadanie "Skonfiguruj środowisko deweloperskie" z checklistą: zainstaluj IDE, sklonuj repo, uruchom projekt lokalnie
+- **When:** Wykonuję kolejne kroki i zaznaczam je jako ukończone
+- **Then:** Mój progress rośnie, zdobywam punkty XP (np. 50 XP za zadanie)
+- **And:** Odblokowane zostaje kolejne zadanie
+- **And:** Mój menedżer widzi aktualizację postępu w swoim panelu
+
+**WF-ONB-002-03: Integracja z repozytoriami kodu (Scenariusz główny)**  
+- **Given:** Mam zadanie "Zrób pierwszy commit do repozytorium projektu"
+- **When:** Robię commit i push do repo (GitHub/GitLab)
+- **Then:** System automatycznie wykrywa commit poprzez webhook
+- **And:** Zadanie oznacza się jako ukończone
+- **And:** Dostaję badge "First Commit" i bonus XP
+
+**WF-ONB-002-04: Quiz sprawdzający wiedzę (Scenariusz główny)**  
+- **Given:** Ukończyłem moduł "Architektura systemu"
+- **When:** Przechodzę do quizu końcowego
+- **Then:** Muszę odpowiedzieć na 10 pytań (próg zaliczenia: 70%)
+- **And:** Jeśli zdam, odblokowany jest następny moduł
+- **And:** Jeśli nie zdam, mogę powtórzyć quiz po 24h lub przejrzeć materiały ponownie
+
+**WF-ONB-002-05: Buddy system (Scenariusz główny)**  
+- **Given:** Menedżer przypisał mi "buddy'ego" - doświadczonego pracownika
+- **When:** Mam pytanie lub problem
+- **Then:** Widzę w systemie kto jest moim buddy i mogę wysłać mu wiadomość bezpośrednio z HRflow
+- **And:** Buddy dostaje powiadomienie i może odpowiedzieć
+- **And:** Po onboardingu, buddy może ocenić moją gotowość do samodzielnej pracy
+
+---
+
+### 4.3. Moduł Rozwoju i Szkoleń
+
+#### WF-DEV-001: Platforma LMS ze Spersonalizowanymi Ścieżkami Rozwoju
+
+**Opis:** System e-learningowy sugerujący szkolenia na podstawie luk kompetencyjnych, celów rozwojowych i wymagań stanowiska.
+
+**Historyjka Użytkownika:**  
+> Jako pracownik,  
+> chcę dostawać rekomendacje szkoleń dopasowanych do moich celów zawodowych,  
+> abym mógł systematycznie rozwijać kompetencje potrzebne do awansu.
+
+**Cel Biznesowy:** Przeszkolenie 60% kadry technicznej z nowych technologii chmurowych w ciągu 12 miesięcy, redukcja wydatków na zewnętrznych konsultantów o 200 tys. PLN.
+
+**Warunki Wstępne:**  
+- Pracownik ma uzupełniony profil kompetencji
+- Dostępne są szkolenia w bibliotece LMS
+
+**Warunki Końcowe:**  
+- Pracownik ukończył szkolenie
+- Kompetencja dodana do profilu
+- Menedżer ma raport z rozwoju zespołu
+
+**Kryteria Akceptacji:**
+
+**WF-DEV-001-01: Rekomendacje szkoleń (Scenariusz główny)**  
+- **Given:** Jestem Python Developerem, mój cel na rok to "nauczyć się AWS"
+- **And:** Na moim stanowisku wymagane jest AWS (którego nie mam w profilu)
+- **When:** Otwieram sekcję "Mój rozwój"
+- **Then:** Na górze widzę spersonalizowane rekomendacje: "AWS dla Python Developerów", "Podstawy Cloud Computing"
+- **And:** Przy każdym szkoleniu widzę szacowany czas, poziom trudności i jak wypełnia moje luki
+
+**WF-DEV-001-02: Ukończenie szkolenia z certyfikatem (Scenariusz główny)**  
+- **Given:** Zapisałem się na szkolenie "AWS Fundamentals" (8 godzin, 5 modułów)
+- **When:** Ukończę wszystkie moduły i zdam test końcowy (min. 80%)
+- **Then:** Otrzymuję certyfikat PDF do pobrania
+- **And:** Kompetencja "AWS - podstawy" automatycznie dodaje się do mojego profilu
+- **And:** Mój menedżer otrzymuje powiadomienie o ukończonym szkoleniu
+
+**WF-DEV-001-03: Ścieżka rozwoju (Learning Path) (Scenariusz główny)**  
+- **Given:** Chcę zostać Tech Leadem w ciągu 2 lat
+- **When:** Wybieram cel "Tech Lead" w kreatorze ścieżki
+- **Then:** System generuje spersonalizowaną ścieżkę z sekwencją szkoleń: techniczne → leadership → communication
+- **And:** Widzę timeline z kamieniami milowymi
+- **And:** Mogę zapisać ścieżkę i śledzić postęp
+
+**WF-DEV-001-04: Brak czasu na szkolenie (Scenariusz alternatywny)**  
+- **Given:** Zapisałem się na szkolenie, ale nie mam czasu w godzinach pracy
+- **When:** Rozmawiam z menedżerem przez system (sekcja "Prośba o czas na rozwój")
+- **Then:** Menedżer dostaje notyfikację i może zaakceptować/odrzucić prośbę
+- **And:** Jeśli zaakceptuje, blok czasu pojawia się w kalendarzu jako "Czas rozwojowy"
+
+---
+
+#### WF-DEV-002: System OKR (Objectives and Key Results)
+
+**Opis:** System kaskadowania celów od strategii firmy przez cele zespołowe do celów indywidualnych, z wizualizacją powiązań i śledzeniem postępu.
+
+**Historyjka Użytkownika:**  
+> Jako menedżer,  
+> chcę widzieć jak cele mojego zespołu łączą się z celami firmy,  
+> abym mógł lepiej priorytetyzować pracę i tłumaczyć zespołowi sens naszych działań.
+
+**Cel Biznesowy:** Zapewnienie 100% transparentności powiązań między celami indywidualnymi a strategią firmy w ciągu 3 miesięcy.
+
+**Warunki Wstępne:**  
+- Zarząd zdefiniował cele strategiczne firmy
+- Trwa kwartał (cykl OKR)
+
+**Warunki Końcowe:**  
+- Cele są skaskadowane na wszystkie poziomy
+- Postęp jest mierzony i widoczny
+
+**Kryteria Akceptacji:**
+
+**WF-DEV-002-01: Tworzenie OKR indywidualnego (Scenariusz główny)**  
+- **Given:** Jestem pracownikiem, rozpoczyna się nowy kwartał
+- **And:** Mój menedżer opublikował cele zespołu
+- **When:** Tworzę swój OKR z Objective "Poprawić wydajność API" i Key Results: "Zmniejszyć response time o 30%", "Osiągnąć 99.9% uptime"
+- **Then:** System wymusza powiązanie z celem zespołowym (wybieram z listy)
+- **And:** Menedżer otrzymuje powiadomienie do akceptacji
+- **And:** Po akceptacji, mój OKR jest widoczny w drzewie celów
+
+**WF-DEV-002-02: Wizualizacja drzewa celów (Scenariusz główny)**  
+- **Given:** Jestem pracownikiem
+- **When:** Otwieram "Drzewo OKR"
+- **Then:** Widzę hierarchiczną wizualizację: Cele Firmy → Cele Mojego Działu → Cele Zespołu → Moje Cele
+- **And:** Widzę progress każdego celu (0-100%)
+- **And:** Mogę kliknąć w dowolny cel aby zobaczyć szczegóły
+
+**WF-DEV-002-03: Aktualizacja postępu Key Result (Scenariusz główny)**  
+- **Given:** Mój Key Result to "Zmniejszyć response time o 30%", obecny postęp to 60%
+- **When:** Zmierzę że response time spadł o kolejne 10% (łącznie 20%)
+- **Then:** Aktualizuję wartość w systemie, postęp zmienia się na ~67%
+- **And:** System automatycznie przelicza postęp nadrzędnego Objective
+- **And:** Dodaję komentarz z wyjaśnieniem co zrobiłem
+
+**WF-DEV-002-04: Check-in tygodniowy (Scenariusz główny)**  
+- **Given:** Jest piątek, system przypomina o aktualizacji OKR
+- **When:** Wchodzę w sekcję "Check-in"
+- **Then:** Widzę formularz z moimi Key Results i mogę szybko zaktualizować postęp
+- **And:** Mogę dodać notatkę "co poszło dobrze", "co blokowało"
+- **And:** Menedżer widzi moje check-iny przed spotkaniem 1:1
+
+---
+
+#### WF-DEV-003: Continuous Feedback (Ciągła Informacja Zwrotna)
+
+**Opis:** System umożliwiający regularne, nieformalne wymiany feedbacku między współpracownikami, wspierający kulturę ciągłego doskonalenia.
+
+**Historyjka Użytkownika:**  
+> Jako pracownik,  
+> chcę móc szybko docenić kolegę lub poprosić o feedback po zakończeniu projektu,  
+> abym mógł ciągle się rozwijać bez czekania na roczną ocenę.
+
+**Cel Biznesowy:** Przejście z rocznych ocen na system ciągłego feedbacku, uzyskanie średnio 4 opinii peer-to-peer na pracownika miesięcznie w ciągu 6 miesięcy.
+
+**Warunki Wstępne:**  
+- Pracownicy są przypisani do zespołów
+- System feedbacku jest aktywny
+
+**Warunki Końcowe:**  
+- Feedback jest zapisany i dostępny dla odbiorcy
+- Statystyki feedbacku są widoczne dla HR
+
+**Kryteria Akceptacji:**
+
+**WF-DEV-003-01: Wysłanie szybkiego feedbacku (Scenariusz główny)**  
+- **Given:** Kolega z zespołu pomógł mi rozwiązać trudny problem
+- **When:** Klikam "Wyślij kudos" przy jego profilu, wybieram kategorię "Pomoc zespołowa", piszę krótką wiadomość
+- **Then:** Kolega otrzymuje powiadomienie z moim feedbackiem
+- **And:** Feedback pojawia się na jego profilu (widoczny dla niego i jego menedżera)
+- **And:** Zdobywa punkty do rankingu miesięcznego "Pomocni współpracownicy"
+
+**WF-DEV-003-02: Poproszenie o feedback (Scenariusz główny)**  
+- **Given:** Ukończyłem duży projekt i chcę wiedzieć jak mi poszło
+- **When:** Wysyłam prośbę o feedback do 3 osób z którymi pracowałem
+- **Then:** Każda osoba otrzymuje powiadomienie z prośbą
+- **And:** Mają 7 dni na odpowiedź
+- **And:** Po otrzymaniu feedbacku, widzę go w sekcji "Otrzymany feedback"
+
+**WF-DEV-003-03: Anonimowy feedback (Scenariusz alternatywny)**  
+- **Given:** Chcę dać konstruktywną krytykę, ale wolę pozostać anonimowy
+- **When:** Wysyłam feedback z zaznaczoną opcją "Wyślij anonimowo"
+- **Then:** Odbiorca widzi treść feedbacku bez informacji kto go wysłał
+- **And:** Menedżer odbiorcy również nie widzi nadawcy
+- **And:** W statystykach HR widać tylko że był anonimowy feedback
+
+**WF-DEV-003-04: Integracja ze Slackiem/Teams (Scenariusz główny)**  
+- **Given:** Mam zainstalowaną integrację HRflow ze Slackiem
+- **When:** Napiszę w Slacku "/kudos @jan.kowalski Świetna robota z prezentacją!"
+- **Then:** Feedback trafia do systemu HRflow
+- **And:** Jan dostaje powiadomienie zarówno w Slacku jak i w HRflow
+
+---
