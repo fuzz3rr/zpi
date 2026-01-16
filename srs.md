@@ -1486,3 +1486,120 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **Program Alumni** - nice-to-have, niski priorytet biznesowy
 
 ---
+## 5. Atrybuty Jakościowe
+
+### 5.1. Jakość Wykonania (Runtime Quality)
+
+#### Wydajność (Performance)
+
+| ID | Wymaganie | Metryka | Wartość docelowa | Warunki pomiaru |
+|----|-----------|---------|------------------|-----------------|
+| **WNF-WYD-01** | Czas odpowiedzi - lista ofert | Response time (P95) | ≤ 1.5 sekundy | 200 jednoczesnych użytkowników, 10 000 ofert w bazie |
+| **WNF-WYD-02** | Czas odpowiedzi - wyszukiwanie | Response time (P95) | ≤ 2 sekundy | Wyszukiwanie pełnotekstowe + filtry, 200 użytkowników |
+| **WNF-WYD-03** | Czas parsowania CV | Processing time | ≤ 10 sekund | Plik PDF do 5MB, standardowa struktura |
+| **WNF-WYD-04** | Czas obliczenia matchingu | Processing time | ≤ 3 sekundy | Kandydat vs. 1 oferta, pełny matching semantyczny |
+| **WNF-WYD-05** | Czas ładowania dashboardu | Time to Interactive | ≤ 3 sekundy | Dashboard analityczny z 10 widgetami |
+| **WNF-WYD-06** | Przepustowość API | Requests/second | ≥ 500 req/s | Endpoint listy ofert, peak load |
+
+#### Dostępność (Availability)
+
+| ID | Wymaganie | Metryka | Wartość docelowa | Uwagi |
+|----|-----------|---------|------------------|-------|
+| **WNF-DOST-01** | Dostępność systemu | Uptime | ≥ 99.5% rocznie | ~43h niedostępności/rok, excluding planowane okna |
+| **WNF-DOST-02** | Planowane okna serwisowe | Maintenance window | Max 4h/miesiąc | Nocą (01:00-05:00), z 48h wyprzedzeniem |
+| **WNF-DOST-03** | Czas odtworzenia po awarii | RTO (Recovery Time Objective) | ≤ 4 godziny | Od wykrycia do przywrócenia usługi |
+| **WNF-DOST-04** | Maksymalna utrata danych | RPO (Recovery Point Objective) | ≤ 1 godzina | Backup co godzinę |
+
+#### Bezpieczeństwo (Security)
+
+| ID | Wymaganie | Opis | Weryfikacja |
+|----|-----------|------|-------------|
+| **WNF-BEZ-01** | Hashowanie haseł | Hasła muszą być hashowane z użyciem bcrypt (cost factor ≥ 12) lub Argon2 | Code review, test jednostkowy |
+| **WNF-BEZ-02** | Sesje użytkowników | Sesja wygasa po 30 minutach bezczynności, max 8h aktywna sesja | Test manualny |
+| **WNF-BEZ-03** | Szyfrowanie w tranzycie | Cała komunikacja przez HTTPS/TLS 1.3 | SSL Labs test (ocena A+) |
+| **WNF-BEZ-04** | Szyfrowanie danych wrażliwych | Dane osobowe szyfrowane AES-256 w spoczynku | Audyt bazy danych |
+| **WNF-BEZ-05** | Ochrona przed OWASP Top 10 | System musi być odporny na: SQL Injection, XSS, CSRF, Broken Auth | Testy penetracyjne (OWASP ZAP) |
+| **WNF-BEZ-06** | Logowanie zdarzeń bezpieczeństwa | Każde logowanie, zmiana uprawnień, dostęp do danych wrażliwych musi być logowane | Audit log review |
+| **WNF-BEZ-07** | Rate limiting | API musi mieć rate limiting: 100 req/min dla niezalogowanych, 1000 req/min dla zalogowanych | Test obciążeniowy |
+| **WNF-BEZ-08** | Zarządzanie tokenami | JWT z krótkim czasem życia (15 min), refresh token (7 dni), możliwość revoke | Test integracyjny |
+
+#### Zgodność z RODO (GDPR Compliance)
+
+| ID | Wymaganie | Opis | Weryfikacja |
+|----|-----------|------|-------------|
+| **WNF-RODO-01** | Prawo do usunięcia | Użytkownik może zażądać usunięcia wszystkich swoich danych w ciągu 72h | Test E2E, procedura |
+| **WNF-RODO-02** | Prawo do eksportu | Użytkownik może pobrać wszystkie swoje dane w formacie JSON/CSV | Test funkcjonalny |
+| **WNF-RODO-03** | Retencja danych kandydatów | Dane kandydatów automatycznie usuwane po 24 miesiącach od ostatniej aktywności (lub wcześniej na żądanie) | Cron job, test integracyjny |
+| **WNF-RODO-04** | Zgody na przetwarzanie | System musi zbierać i przechowywać explicit consent z timestampem i wersją polityki | Audit trail |
+| **WNF-RODO-05** | Minimalizacja danych | System zbiera tylko dane niezbędne do realizacji celu (lista w dokumentacji) | Data mapping review |
+
+#### Skalowalność (Scalability)
+
+| ID | Wymaganie | Metryka | Wartość docelowa | Uwagi |
+|----|-----------|---------|------------------|-------|
+| **WNF-SKAL-01** | Użytkownicy jednoczesni | Concurrent sessions | ≥ 5000 | Bez degradacji wydajności (WNF-WYD-01 nadal spełnione) |
+| **WNF-SKAL-02** | Skalowalność horyzontalna | Scale-out | Auto-scaling 2-10 instancji | Na podstawie CPU > 70% przez 5 min |
+| **WNF-SKAL-03** | Skalowalność bazy danych | Read replicas | ≥ 2 repliki | Dla operacji odczytu (lista ofert, wyszukiwanie) |
+| **WNF-SKAL-04** | Rozmiar bazy danych | Data volume | Obsługa 1M kandydatów, 100k ofert | Bez degradacji wydajności |
+
+### 5.2. Jakość Projektu (Design Quality)
+
+#### Modyfikowalność (Modifiability)
+
+| ID | Wymaganie | Opis | Weryfikacja |
+|----|-----------|------|-------------|
+| **WNF-MOD-01** | Architektura modułowa | Każdy moduł (Rekrutacja, Onboarding, Rozwój, Analityka, Offboarding) jest niezależnym bounded context | Architecture review |
+| **WNF-MOD-02** | Pluginy integracyjne | Dodanie nowej integracji (np. nowy kalendarz) nie wymaga modyfikacji core code | Adapter pattern, code review |
+| **WNF-MOD-03** | Feature flags | Nowe funkcjonalności można włączać/wyłączać per tenant bez deploymentu | Test konfiguracji |
+| **WNF-MOD-04** | Konfigurowalność workflow | Workflow rekrutacyjny (etapy, statusy) konfigurowalne przez HR bez deweloperów | Test UI konfiguracji |
+
+#### Testowalność (Testability)
+
+| ID | Wymaganie | Metryka | Wartość docelowa |
+|----|-----------|---------|------------------|
+| **WNF-TEST-01** | Pokrycie testami jednostkowymi | Code coverage | ≥ 80% dla logiki biznesowej |
+| **WNF-TEST-02** | Pokrycie testami integracyjnymi | API endpoints coverage | 100% krytycznych ścieżek |
+| **WNF-TEST-03** | Testy E2E | Critical user journeys | 100% (aplikowanie, onboarding, feedback) |
+| **WNF-TEST-04** | Czas wykonania testów | CI pipeline duration | ≤ 15 minut (unit + integration) |
+
+#### Przenośność (Portability)
+
+| ID | Wymaganie | Opis | Weryfikacja |
+|----|-----------|------|-------------|
+| **WNF-PRZEN-01** | Konteneryzacja | Cała aplikacja uruchamialna przez `docker-compose up` | Test na świeżej maszynie |
+| **WNF-PRZEN-02** | Cloud-agnostic | Brak vendor lock-in (AWS/GCP/Azure) dla core funkcjonalności | Architecture review |
+| **WNF-PRZEN-03** | Wsparcie przeglądarek | Chrome, Firefox, Safari, Edge (ostatnie 2 wersje) | Cross-browser testing |
+| **WNF-PRZEN-04** | Responsywność | Pełna funkcjonalność na desktop, tablet, mobile | Responsive testing |
+
+#### Użyteczność (Usability)
+
+| ID | Wymaganie | Metryka | Wartość docelowa |
+|----|-----------|---------|------------------|
+| **WNF-UZ-01** | Onboarding użytkownika | Time to first task completion | ≤ 5 minut bez szkolenia (kandydat) |
+| **WNF-UZ-02** | Dostępność WCAG | WCAG 2.1 compliance | Poziom AA |
+| **WNF-UZ-03** | Satysfakcja użytkowników | System Usability Scale (SUS) | ≥ 75 punktów |
+| **WNF-UZ-04** | Czas wykonania zadania | Time on task - złożenie aplikacji | ≤ 3 minuty (z gotowym CV) |
+
+#### Niezawodność (Reliability)
+
+| ID | Wymaganie | Metryka | Wartość docelowa |
+|----|-----------|---------|------------------|
+| **WNF-NIEZ-01** | Błędy użytkownika | Error rate | ≤ 0.1% requestów kończy się błędem 5xx |
+| **WNF-NIEZ-02** | Transakcje krytyczne | Transaction success rate | 99.99% (podpisywanie umów, zmiana statusu) |
+| **WNF-NIEZ-03** | Spójność danych | Data integrity | Zero utraty danych w transakcjach |
+
+### 5.3. Priorytetyzacja Atrybutów Jakościowych
+
+| Priorytet | Atrybut | Uzasadnienie |
+|-----------|---------|--------------|
+| **1 (Krytyczny)** | Bezpieczeństwo (WNF-BEZ-*) | Dane osobowe, RODO - brak kompromisów |
+| **2 (Krytyczny)** | RODO Compliance (WNF-RODO-*) | Wymóg prawny, kary do 4% obrotu |
+| **3 (Wysoki)** | Dostępność (WNF-DOST-*) | System musi działać w godzinach pracy |
+| **4 (Wysoki)** | Wydajność (WNF-WYD-*) | Wpływa na Candidate Experience (cel: cNPS +50) |
+| **5 (Średni)** | Użyteczność (WNF-UZ-*) | Kluczowe dla adopcji, ale można iterować |
+| **6 (Średni)** | Skalowalność (WNF-SKAL-*) | Ważne dla wzrostu, ale MVP może mieć limity |
+| **7 (Niski)** | Modyfikowalność (WNF-MOD-*) | Inwestycja w przyszłość, nie blokuje MVP |
+| **8 (Niski)** | Testowalność (WNF-TEST-*) | Ważne, ale coverage można budować iteracyjnie |
+
+---
+
