@@ -1753,3 +1753,347 @@ Na podstawie analizy porównawczej podjęliśmy następujące decyzje:
 
 > *"HRflow to pierwszy system HR dla firm 100-1000 pracowników, który łączy inteligentne dopasowanie kandydatów (AI Matching), gamifikowany onboarding i predykcyjną analitykę retencji - funkcje dotąd dostępne tylko w drogich rozwiązaniach enterprise - w przystępnej cenie i z wdrożeniem w tydzień."*
 
+## Dodatki
+
+### Dodatek A: Modele Analityczne
+
+#### Diagram Przypadków Użycia
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                                    HRflow                                        │
+│                                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────────┐│
+│  │                           MODUŁ REKRUTACJI                                  ││
+│  │                                                                              ││
+│  │    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐       ││
+│  │    │ Przeglądaj      │    │ Aplikuj na      │    │ Śledź status    │       ││
+│  │    │ oferty pracy    │    │ stanowisko      │    │ aplikacji       │       ││
+│  │    └────────┬────────┘    └────────┬────────┘    └────────┬────────┘       ││
+│  │             │                      │                      │                 ││
+│  │             └──────────────────────┼──────────────────────┘                 ││
+│  │                                    │                                        ││
+│  │                              ┌─────┴─────┐                                  ││
+│  │                              │ KANDYDAT  │                                  ││
+│  │                              └───────────┘                                  ││
+│  │                                                                              ││
+│  │    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐       ││
+│  │    │ Publikuj        │    │ Oceniaj         │    │ Zarządzaj       │       ││
+│  │    │ oferty          │    │ kandydatów      │    │ procesem        │       ││
+│  │    └────────┬────────┘    └────────┬────────┘    └────────┬────────┘       ││
+│  │             │                      │                      │                 ││
+│  │             └──────────────────────┼──────────────────────┘                 ││
+│  │                                    │                                        ││
+│  │                              ┌─────┴─────┐                                  ││
+│  │                              │ REKRUTER  │                                  ││
+│  │                              └───────────┘                                  ││
+│  │                                                                              ││
+│  │    ┌─────────────────┐                         ┌─────────────────┐          ││
+│  │    │ Poleć           │                         │ Przeglądaj      │          ││
+│  │    │ kandydata       │                         │ Giełdę Talentów │          ││
+│  │    └────────┬────────┘                         └────────┬────────┘          ││
+│  │             └────────────────┬──────────────────────────┘                   ││
+│  │                              │                                              ││
+│  │                        ┌─────┴─────┐                                        ││
+│  │                        │ PRACOWNIK │                                        ││
+│  │                        └───────────┘                                        ││
+│  └─────────────────────────────────────────────────────────────────────────────┘│
+│                                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────────┐│
+│  │                           MODUŁ ONBOARDINGU                                 ││
+│  │                                                                              ││
+│  │    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐       ││
+│  │    │ Podpisz         │    │ Wykonaj         │    │ Ukończ          │       ││
+│  │    │ dokumenty       │    │ zadania         │    │ quiz            │       ││
+│  │    └────────┬────────┘    └────────┬────────┘    └────────┬────────┘       ││
+│  │             │                      │                      │                 ││
+│  │             └──────────────────────┼──────────────────────┘                 ││
+│  │                                    │                                        ││
+│  │                        ┌───────────┴───────────┐                            ││
+│  │                        │ NOWY PRACOWNIK        │                            ││
+│  │                        └───────────────────────┘                            ││
+│  │                                                                              ││
+│  │    ┌─────────────────┐    ┌─────────────────┐                               ││
+│  │    │ Generuj         │    │ Śledź postępy   │                               ││
+│  │    │ umowy           │    │ onboardingu     │                               ││
+│  │    └────────┬────────┘    └────────┬────────┘                               ││
+│  │             └──────────────────────┘                                        ││
+│  │                        │                                                    ││
+│  │                  ┌─────┴─────┐                                              ││
+│  │                  │ HR ADMIN  │                                              ││
+│  │                  └───────────┘                                              ││
+│  └─────────────────────────────────────────────────────────────────────────────┘│
+│                                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────────┐│
+│  │                           MODUŁ ROZWOJU                                     ││
+│  │                                                                              ││
+│  │    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐       ││
+│  │    │ Przeglądaj      │    │ Definiuj        │    │ Wymieniaj       │       ││
+│  │    │ szkolenia LMS   │    │ OKR             │    │ feedback        │       ││
+│  │    └────────┬────────┘    └────────┬────────┘    └────────┬────────┘       ││
+│  │             │                      │                      │                 ││
+│  │             └──────────────────────┼──────────────────────┘                 ││
+│  │                                    │                                        ││
+│  │                        ┌───────────┴───────────┐                            ││
+│  │                        │     PRACOWNIK         │                            ││
+│  │                        └───────────────────────┘                            ││
+│  │                                                                              ││
+│  │    ┌─────────────────┐    ┌─────────────────┐                               ││
+│  │    │ Oceniaj         │    │ Planuj          │                               ││
+│  │    │ zespół (9-box)  │    │ sukcesję        │                               ││
+│  │    └────────┬────────┘    └────────┬────────┘                               ││
+│  │             └──────────────────────┘                                        ││
+│  │                        │                                                    ││
+│  │                  ┌─────┴─────┐                                              ││
+│  │                  │ MENEDŻER  │                                              ││
+│  │                  └───────────┘                                              ││
+│  └─────────────────────────────────────────────────────────────────────────────┘│
+│                                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────────┐│
+│  │                           MODUŁ ANALITYKI                                   ││
+│  │                                                                              ││
+│  │    ┌─────────────────┐    ┌─────────────────┐                               ││
+│  │    │ Przeglądaj      │    │ Eksportuj       │                               ││
+│  │    │ dashboardy      │    │ raporty         │                               ││
+│  │    └────────┬────────┘    └────────┬────────┘                               ││
+│  │             └──────────────────────┘                                        ││
+│  │                        │                                                    ││
+│  │              ┌─────────┴─────────┐                                          ││
+│  │              │ HR MANAGER/ZARZĄD │                                          ││
+│  │              └───────────────────┘                                          ││
+│  └─────────────────────────────────────────────────────────────────────────────┘│
+│                                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────────┐│
+│  │                           MODUŁ OFFBOARDINGU                                ││
+│  │                                                                              ││
+│  │    ┌─────────────────┐    ┌─────────────────┐                               ││
+│  │    │ Dołącz do       │    │ Przeglądaj      │                               ││
+│  │    │ Alumni          │    │ oferty (Alumni) │                               ││
+│  │    └────────┬────────┘    └────────┬────────┘                               ││
+│  │             └──────────────────────┘                                        ││
+│  │                        │                                                    ││
+│  │              ┌─────────┴─────────┐                                          ││
+│  │              │ BYŁY PRACOWNIK    │                                          ││
+│  │              └───────────────────┘                                          ││
+│  │                                                                              ││
+│  │    ┌─────────────────┐    ┌─────────────────┐                               ││
+│  │    │ Zarządzaj       │    │ Odbieraj        │                               ││
+│  │    │ checklistą      │    │ dostępy         │                               ││
+│  │    └────────┬────────┘    └────────┬────────┘                               ││
+│  │             └──────────────────────┘                                        ││
+│  │                        │                                                    ││
+│  │              ┌─────────┴─────────┐                                          ││
+│  │              │ HR ADMIN / IT     │                                          ││
+│  │              └───────────────────┘                                          ││
+│  └─────────────────────────────────────────────────────────────────────────────┘│
+│                                                                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### Dodatek B: Persony Użytkowników
+
+#### Persona 1: Anna Wiśniewska - Rekruterka IT
+
+**Dane demograficzne:**
+- Wiek: 28 lat
+- Stanowisko: IT Recruiter w firmie software house (150 pracowników)
+- Doświadczenie: 3 lata w rekrutacji IT
+- Lokalizacja: Warszawa
+
+**Zdjęcie:** Młoda kobieta, casual business, często na słuchawkach
+
+**Cytat:**
+> *"Każdego dnia przeglądam setki CV. Potrzebuję narzędzia, które odsieje tych, którzy kompletnie nie pasują, ale nie przegapi diamentów ukrytych w niestandardowych CV."*
+
+**Cele i motywacje:**
+- Zamykać procesy rekrutacyjne szybciej (presja na Time-to-Hire)
+- Dostarczać hiring managerom kandydatów wysokiej jakości
+- Budować pozytywne relacje z kandydatami (employer branding)
+- Rozwijać się w kierunku HR Business Partner
+
+**Frustracje i bóle:**
+- Tonę w CV - 80% to spam lub kompletnie niedopasowani kandydaci
+- Koordynacja terminów rozmów to koszmar (ping-pong mailowy)
+- Hiring managerowie zmieniają wymagania w trakcie procesu
+- Kandydaci narzekają że nie dostają feedbacku (a ja nie mam czasu)
+- Nasz ATS to Excel z lat 90-tych
+
+**Zachowania technologiczne:**
+- Power user LinkedIn Recruiter
+- Używa Calendly do umawiania spotkań (prywatnie)
+- Slack do komunikacji wewnętrznej
+- Frustracja z firmowego ATS (wolny, nieintuicyjny)
+
+**Scenariusz użycia HRflow:**
+Anna zaczyna dzień od sprawdzenia dashboardu - widzi 47 nowych aplikacji na stanowisko Senior Java Developer. System automatycznie posortował je wg dopasowania. Top 10 ma score >80%. Anna przegląda ich profile, widzi że system prawidłowo rozpoznał że "Spring Boot" = "Java". Wybiera 5 kandydatów do rozmowy telefonicznej, klika "Zaproponuj terminy" - system sprawdza kalendarz jej i hiring managera i wysyła kandydatom 3 opcje. Do końca dnia ma zaplanowane 4 rozmowy na następny tydzień. Kandydaci którzy nie przeszli dostają automatyczny, spersonalizowany feedback.
+
+---
+
+#### Persona 2: Marek Nowicki - Nowy Programista (Junior)
+
+**Dane demograficzne:**
+- Wiek: 25 lat
+- Stanowisko: Junior Backend Developer (właśnie zatrudniony)
+- Doświadczenie: 1 rok (bootcamp + staż)
+- Lokalizacja: Kraków (praca hybrydowa)
+
+**Zdjęcie:** Młody mężczyzna, hoodie, słuchawki na szyi
+
+**Cytat:**
+> *"Pierwszy tydzień w nowej pracy to chaos. Loginy, hasła, dokumenty, spotkania... Chciałbym mieć jedno miejsce, gdzie wszystko jest ogarnięte."*
+
+**Cele i motywacje:**
+- Szybko wdrożyć się w projekt i zacząć dowozić wartość
+- Nie wyglądać na niekompetentnego przed zespołem
+- Nauczyć się stack'u technicznego firmy (nowy dla niego)
+- Zdobyć doświadczenie na CV
+
+**Frustracje i bóle:**
+- Nie wiem do kogo się zwrócić z pytaniem
+- Dokumentacja jest rozproszona (Confluence, Google Docs, README, Slack)
+- Nie wiem czy robię postępy - nikt mi nie mówi
+- Dużo formalności (NDA, umowa, sprzęt) - gubię się
+
+**Zachowania technologiczne:**
+- Digital native - wszystko na telefonie
+- Gamifikacja go motywuje (Duolingo streak!)
+- Preferuje video tutoriale nad dokumentację tekstową
+- Aktywny na Slacku
+
+**Scenariusz użycia HRflow:**
+Marek dostaje maila "Witaj w firmie!" z linkiem do HRflow. Loguje się i widzi spersonalizowaną ścieżkę onboardingu "Backend Developer - Tydzień 1". Ma checklistę: podpisz dokumenty (e-podpis, gotowe w 5 min), obejrzyj video o firmie, skonfiguruj środowisko (instrukcja krok po kroku + automatyczna weryfikacja gdy sklonuje repo). Za każde zadanie dostaje XP i odblokuje kolejne. Widzi że jego "buddy" to Senior Dev Adam - może mu napisać bezpośrednio z systemu. Po tygodniu ma 75% ukończenia onboardingu i badge "First PR Merged". Czuje że ma kontrolę nad procesem.
+
+---
+
+#### Persona 3: Katarzyna Mazur - HR Manager
+
+**Dane demograficzne:**
+- Wiek: 42 lata
+- Stanowisko: HR Manager w firmie produkcyjnej (400 pracowników)
+- Doświadczenie: 15 lat w HR
+- Lokalizacja: Poznań
+
+**Zdjęcie:** Kobieta w średnim wieku, profesjonalny strój, tablet w ręku
+
+**Cytat:**
+> *"Zarząd pyta mnie o rotację, koszty rekrutacji, development pipeline... Zbieranie tych danych z Exceli to koszmar. Potrzebuję jednego źródła prawdy."*
+
+**Cele i motywacje:**
+- Zmniejszyć rotację (obecnie 18%, cel: 12%)
+- Mieć argumenty liczbowe w rozmowach z zarządem
+- Zbudować employer brand firmy
+- Rozwinąć zespół HR (ma 4 osoby)
+
+**Frustracje i bóle:**
+- Dane są w 10 różnych miejscach (payroll, ATS, Excel, papier)
+- Rotacja w produkcji to czarna dziura (nie wiem dlaczego odchodzą)
+- Menedżerowie nie prowadzą 1:1 z ludźmi
+- Brak budżetu na duże systemy HR (Workday to kosmos)
+
+**Zachowania technologiczne:**
+- Poweruser Excel (pivot tables, VLOOKUP)
+- Używa PowerBI do raportowania (podstawy)
+- Woli spotkania twarzą w twarz niż Slack
+- Sceptyczna wobec "AI" - chce zobaczyć konkretne wyniki
+
+**Scenariusz użycia HRflow:**
+Katarzyna otwiera dashboard o 8 rano. Widzi alert: "Ryzyko odejścia: 3 pracowników działu utrzymania ruchu w czerwonej strefie (>70%)". Klika w szczegóły - system wskazuje czynniki: brak podwyżki 2 lata, spadek engagement score, ich menedżer ma najniższy rating w firmie. Katarzyna umawia spotkanie z dyrektorem produkcji - pokazuje mu dane z HRflow. Razem planują działania: przegląd wynagrodzeń, szkolenie dla menedżera. Za miesiąc sprawdza - ryzyko spadło do 45%. Ma konkretne dane na board meeting.
+
+---
+
+#### Persona 4: Tomasz Kowalczyk - Menedżer Zespołu
+
+**Dane demograficzne:**
+- Wiek: 35 lat
+- Stanowisko: Sales Manager (zespół 12 osób)
+- Doświadczenie: 8 lat w sprzedaży, 3 lata jako menedżer
+- Lokalizacja: Wrocław
+
+**Zdjęcie:** Mężczyzna w koszuli, pewny siebie, telefon przy uchu
+
+**Cytat:**
+> *"Chcę wiedzieć, kto w moim zespole ma potencjał na lidera, a kto może odejść. I chcę to wiedzieć zanim będzie za późno."*
+
+**Cele i motywacje:**
+- Dowieźć target sprzedażowy zespołu
+- Rozwinąć top performerów na liderów
+- Zatrzymać najlepszych (konkurencja kusi)
+- Mieć czas na strategię, nie tylko gaszenie pożarów
+
+**Frustracje i bóle:**
+- Rozmowy rozwojowe z ludźmi to "kiedyś zrobię"
+- Nie wiem kto naprawdę jest niezadowolony (dowiaduję się jak składa wypowiedzenie)
+- Roczne oceny to fikcja - wypełniam bo muszę
+- Feedback od zespołu? "Wszystko ok, szefie"
+
+**Zachowania technologiczne:**
+- CRM (Salesforce) to jego drugie biurko
+- Smartfon zawsze w ręku
+- Lubi dashboardy i wykresy (łatwo pokazać zarządowi)
+- Nie ma czasu na skomplikowane systemy
+
+**Scenariusz użycia HRflow:**
+Tomek dostaje powiadomienie push w piątek: "Przypomnienie: Weekly check-in z zespołem". Otwiera aplikację mobilną, widzi status OKR każdego handlowca. Kasia ma 120% celu - wysyła jej szybki kudos "Świetna robota z klientem X!". Marek ma tylko 60% - klika "Zaplanuj 1:1" na poniedziałek. W sekcji "Talent Grid" sprawdza - system sugeruje że Kasia jest "High Potential" i powinna dostać leadership track. Przygotowuje się do rozmowy z HR o jej awansie.
+
+---
+
+### Dodatek C: Kwestie do Rozwiązania
+
+Lista pytań i niejasności które pojawiły się w trakcie analizy i wymagają decyzji:
+
+#### Kwestie Biznesowe
+
+| ID | Kwestia | Proponowane rozwiązanie | Status | Właściciel |
+|----|---------|-------------------------|--------|------------|
+| **KB-01** | Czy wspieramy multi-tenancy (jedna instalacja, wiele firm) czy single-tenant? | Multi-tenant (SaaS model), ale z możliwością dedicated dla enterprise | Do decyzji | Product Owner |
+| **KB-02** | Jaki model cenowy? Per user? Per moduł? | Freemium + per active employee/month | Do decyzji | Product Owner |
+| **KB-03** | Czy integracja z payroll jest w scope MVP? | NIE - poza scope, integracja w przyszłości | Zdecydowane | Team |
+| **KB-04** | Czy system ma wspierać wiele języków od MVP? | MVP: polski + angielski, później więcej | Do decyzji | Product Owner |
+| **KB-05** | Jak długo przechowujemy dane nieaktywnych kandydatów? | 24 miesiące (RODO), potem anonimizacja | Zdecydowane | Team |
+
+#### Kwestie Techniczne
+
+| ID | Kwestia | Proponowane rozwiązanie | Status | Właściciel |
+|----|---------|-------------------------|--------|------------|
+| **KT-01** | Jaki provider e-podpisu? Autenti vs DocuSign vs Signaturit | Autenti (polski, tańszy, RODO) | Do decyzji | Tech Lead |
+| **KT-02** | Jak trenować model Semantic Matching bez danych historycznych? | Pre-trained embeddings (BERT) + fine-tuning na publicznych datasetsach | Do prototypu | ML Engineer |
+| **KT-03** | Self-hosted Elasticsearch vs managed (Elastic Cloud)? | Managed dla MVP (szybciej), self-hosted jeśli koszty za wysokie | Do decyzji | Tech Lead |
+| **KT-04** | Jak obsługiwać integrację z różnymi wersjami AD/LDAP? | Abstraction layer + konfigurowalne mapowanie atrybutów | Do implementacji | Backend |
+| **KT-05** | Czy model Retention AI wymaga GPU? | CPU wystarczy dla inference, GPU do treningu (sporadycznie) | Zdecydowane | ML Engineer |
+
+#### Kwestie UX/Design
+
+| ID | Kwestia | Proponowane rozwiązanie | Status | Właściciel |
+|----|---------|-------------------------|--------|------------|
+| **KU-01** | Jak prezentować "ryzyko odejścia" menedżerom - czy to etyczne pokazywać score przy pracowniku? | Pokazujemy trendy zespołowe, indywidualne tylko dla HR z odpowiednimi uprawnieniami | Do konsultacji | UX + HR |
+| **KU-02** | Czy gamifikacja onboardingu nie będzie infantylna dla seniorów? | Opcjonalna (można wyłączyć), różne style (XP vs. progress bar) | Do testów A/B | UX |
+| **KU-03** | Jak obsłużyć accessibility dla osób niewidomych w drag-and-drop (np. Kanban rekrutacji)? | Alternatywny interfejs listowy, keyboard navigation | Do implementacji | Frontend |
+
+#### Kwestie Prawne
+
+| ID | Kwestia | Proponowane rozwiązanie | Status | Właściciel |
+|----|---------|-------------------------|--------|------------|
+| **KP-01** | Czy predykcja rotacji na podstawie ML nie narusza RODO (automated decision making)? | Nie jest to automated decision - zawsze człowiek podejmuje decyzję, system tylko sugeruje | Do konsultacji prawnej | Prawnik |
+| **KP-02** | Jak obsłużyć prawo do bycia zapomnianym jeśli kandydat był w kilku procesach? | Pełna anonimizacja wszystkich powiązanych rekordów | Do implementacji | Backend |
+| **KP-03** | Czy e-podpis kwalifikowany jest wymagany dla umów o pracę? | W Polsce: tak dla umów o pracę, nie dla B2B | Zdecydowane | Prawnik |
+
+---
+
+### Historia zmian dokumentu
+
+| Wersja | Data       | Autor              | Opis zmian                                                     |
+|--------|------------|--------------------|----------------------------------------------------------------|
+| 0.1    | 2026-01-10 | Adrian Jabłoński   | Inicjalizacja projektu, wstęp i struktura dokumentu            |
+| 0.2    | 2026-01-10 | Paweł Gorgolewski  | Wprowadzenie, tabele i ograniczenia projektowe                 |
+| 0.3    | 2026-01-11 | Kamil Pierzchała   | Wymagania ogólne i doprecyzowanie SRS                          |
+| 0.4    | 2026-01-12 | Łukasz Bartoszek   | Interfejsy zewnętrzne systemu                                  |
+| 0.5    | 2026-01-14 | Kamil Pierzchała   | Moduł rekrutacji (wymagania funkcjonalne)                      |
+| 0.6    | 2026-01-16 | Paweł Gorgolewski  | Rozszerzenie wymagań funkcjonalnych                            |
+| 0.7    | 2026-01-16 | Bartosz Balawender | Analityka HR, benefity, offboarding                            |
+| 0.8    | 2026-01-16 | Łukasz Bartoszek   | Atrybuty jakościowe systemu                                    |
+| 0.9    | 2026-01-16 | Adrian Jabłoński   | Analiza konkurencyjna i poprawki formatowania                  |
+| 1.0    | 2026-01-17 | Bartosz Balawender | Dodatki: diagramy przypadków użycia, persony i kwestie otwarte |
+
+---
