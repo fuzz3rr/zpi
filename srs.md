@@ -298,7 +298,7 @@ Tomek zarządza 12-osobowym zespołem sprzedaży. Potrzebuje prostych narzędzi 
 
 #### Założenia biznesowe
 
-| ID        | Założenie                                                  | Ryzyko jeśli nieprawdziwe                                        | 
+| ID        | Założenie                                                  | Ryzyko jeśli nieprawdziwe                                        |
 |-----------|------------------------------------------------------------|------------------------------------------------------------------|
 | **ZB-01** | Firma docelowa zatrudnia 100-1000 pracowników              | Za mała firma = zbędne funkcje; za duża = problemy wydajnościowe |
 | **ZB-02** | Istnieje dział HR z min. 2 osobami                         | Brak HR = brak użytkowników systemu                              |
@@ -336,6 +336,7 @@ Tomek zarządza 12-osobowym zespołem sprzedaży. Potrzebuje prostych narzędzi 
 | **ZZ-05** | System kalendarzowy (Google/Outlook)       | Manualnie uzgadniane terminy          |
 
 ---
+
 ## 3. Wymagania Dotyczące Interfejsów Zewnętrznych
 
 ### 3.1. Interfejsy Użytkownika (UI)
@@ -343,12 +344,14 @@ Tomek zarządza 12-osobowym zespołem sprzedaży. Potrzebuje prostych narzędzi 
 #### Ogólne wytyczne projektowe
 
 **Styl wizualny:**
+
 - Design system oparty na Material Design 3
 - Kolorystyka: niebieski (#1976D2) jako primary, szary (#424242) jako secondary
 - Typografia: Inter dla UI, system fonts jako fallback
 - Responsywność: Mobile-first, breakpoints: 320px, 768px, 1024px, 1440px
 
 **Zasady UX:**
+
 - Maksymalnie 3 kliknięcia do najważniejszych akcji
 - Jasne komunikaty błędów z sugestią rozwiązania
 - Skeleton loaders zamiast spinnerów
@@ -361,7 +364,7 @@ Tomek zarządza 12-osobowym zespołem sprzedaży. Potrzebuje prostych narzędzi 
 
 ```text
 ┌─────────────────────────────────────────────────────────────────┐
-│  (o) [Szukaj stanowiska...]        @ Lokalizacja v   # Filtruj │
+│  (o) [Szukaj stanowiska...]        @ Lokalizacja v   # Filtruj  │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  ┌───────────────────────────────────────────────────────────┐  │
@@ -687,10 +690,12 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Cel Biznesowy:** Skrócenie Time-to-Hire z 45 do 20 dni poprzez automatyzację wstępnej selekcji. Obsłużenie 2x więcej kandydatów bez zwiększania zespołu HR.
 
 **Warunki Wstępne:**  
+
 - Oferta pracy jest opublikowana w systemie  
 - Kandydat przesłał CV w formacie PDF/DOCX
 
 **Warunki Końcowe:**  
+
 - CV jest sparsowane i informacje zapisane w profilu kandydata  
 - Kandydat ma przypisany score dopasowania do oferty  
 - Rekruter widzi kandydata na liście z informacją o dopasowaniu
@@ -698,6 +703,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Kryteria Akceptacji:**
 
 **WF-REK-001-01: Pomyślne parsowanie CV (Scenariusz główny)**  
+
 - **Given:** Kandydat przesłał CV w formacie PDF zawierające sekcje: dane kontaktowe, doświadczenie, umiejętności, wykształcenie  
 - **When:** System przetwarza przesłany plik  
 - **Then:** W profilu kandydata zapisane są: imię, nazwisko, email, telefon, lista stanowisk z datami, lista umiejętności  
@@ -705,18 +711,21 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Kandydat widzi podgląd wyekstrahowanych danych z możliwością korekty
 
 **WF-REK-001-02: Scoring dopasowania kandydata (Scenariusz główny)**  
+
 - **Given:** CV kandydata zostało sparsowane, oferta ma zdefiniowane wymagane i opcjonalne kompetencje  
 - **When:** System oblicza dopasowanie kandydata  
 - **Then:** Kandydat otrzymuje score 0-100% z rozbiciem na kategorie (umiejętności techniczne, doświadczenie, wykształcenie)  
 - **And:** Rekruter widzi wizualnie które wymagania kandydat spełnia, a których nie
 
 **WF-REK-001-03: CV w nieobsługiwanym formacie (Scenariusz alternatywny)**  
+
 - **Given:** Kandydat próbuje przesłać CV w formacie innym niż PDF/DOCX (np. JPG, TXT)  
 - **When:** Kliknie "Prześlij CV"  
 - **Then:** System wyświetla komunikat "Akceptujemy tylko pliki PDF i DOCX. Proszę zapisać CV w jednym z tych formatów."  
 - **And:** Plik nie jest przesyłany
 
 **WF-REK-001-04: CV uszkodzone lub nieczytelne (Scenariusz wyjątkowy)**  
+
 - **Given:** Kandydat przesłał plik PDF który jest uszkodzony lub zawiera tylko obrazy bez warstwy tekstowej  
 - **When:** System próbuje sparsować plik  
 - **Then:** System wyświetla komunikat "Nie udało się odczytać treści CV. Sprawdź czy plik nie jest uszkodzony i czy zawiera tekst (nie tylko obrazy)."  
@@ -737,27 +746,32 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Cel Biznesowy:** Zwiększenie Interview Acceptance Rate z 10% do 15% poprzez eliminację fałszywych odrzuceń.
 
 **Warunki Wstępne:**  
+
 - Zdefiniowana ontologia kompetencji (graf wiedzy)  
 - CV kandydata zostało sparsowane
 
 **Warunki Końcowe:**  
+
 - Score uwzględnia kompetencje pokrewne  
 - Rekruter widzi wyjaśnienie dlaczego kandydat pasuje/nie pasuje
 
 **Kryteria Akceptacji:**
 
 **WF-REK-002-01: Rozpoznanie kompetencji pokrewnych (Scenariusz główny)**  
+
 - **Given:** Oferta wymaga "SQL", kandydat ma w CV "PostgreSQL" i "Oracle DB"  
 - **When:** System oblicza dopasowanie  
 - **Then:** Wymaganie "SQL" jest oznaczone jako spełnione z adnotacją "Wykryte poprzez: PostgreSQL, Oracle DB"  
 - **And:** Score kandydata jest wyższy niż przy dosłownym porównaniu
 
 **WF-REK-002-02: Hierarchia frameworków (Scenariusz główny)**  
+
 - **Given:** Oferta wymaga "JavaScript", kandydat ma w CV tylko "React" i "Vue.js"  
 - **When:** System oblicza dopasowanie  
 - **Then:** Wymaganie "JavaScript" jest oznaczone jako spełnione z adnotacją "Wykryte poprzez: React, Vue.js"
 
 **WF-REK-002-03: Brak kompetencji i pokrewnych (Scenariusz alternatywny)**  
+
 - **Given:** Oferta wymaga "Kubernetes", kandydat nie ma żadnych kompetencji z obszaru container orchestration  
 - **When:** System oblicza dopasowanie  
 - **Then:** Wymaganie "Kubernetes" jest oznaczone jako niespełnione  
@@ -777,22 +791,26 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Cel Biznesowy:** Osiągnięcie Candidate NPS (cNPS) na poziomie +50 poprzez transparentność procesu.
 
 **Warunki Wstępne:**  
+
 - Kandydat złożył aplikację i ma konto w systemie  
 - Aplikacja ma przypisany status
 
 **Warunki Końcowe:**  
+
 - Kandydat widzi aktualny status  
 - Kandydat otrzymuje powiadomienie przy zmianie statusu
 
 **Kryteria Akceptacji:**
 
 **WF-REK-003-01: Podgląd statusu aplikacji (Scenariusz główny)**  
+
 - **Given:** Jestem zalogowany jako kandydat i mam 3 aktywne aplikacje  
 - **When:** Wchodzę na stronę "Moje aplikacje"  
 - **Then:** Widzę listę wszystkich moich aplikacji z aktualnym statusem (np. "Wysłana", "W ocenie", "Zaproszenie na rozmowę", "Odrzucona")  
 - **And:** Dla każdej aplikacji widzę timeline z historią zmian statusów i datami
 
 **WF-REK-003-02: Powiadomienie o zmianie statusu (Scenariusz główny)**  
+
 - **Given:** Moja aplikacja zmieniła status z "W ocenie" na "Zaproszenie na rozmowę"  
 - **When:** Rekruter zapisuje zmianę statusu  
 - **Then:** Otrzymuję powiadomienie email w ciągu 5 minut  
@@ -800,12 +818,14 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Jeśli mam aplikację mobilną, dostaję push notification
 
 **WF-REK-003-03: Automatyczny feedback przy odrzuceniu (Scenariusz główny)**  
+
 - **Given:** Moja aplikacja została odrzucona, rekruter wybrał powód odrzucenia  
 - **When:** Status zmienia się na "Odrzucona"  
 - **Then:** Otrzymuję spersonalizowany email z informacją o powodzie (bez szczegółów wrażliwych)  
 - **And:** Jeśli powód to brak kompetencji X, system sugeruje szkolenia z X
 
 **WF-REK-003-04: Aplikacja bez zmian przez 14 dni (Scenariusz wyjątkowy)**  
+
 - **Given:** Moja aplikacja jest w statusie "W ocenie" od 14 dni bez żadnych zmian  
 - **When:** Mija 14 dni  
 - **Then:** Otrzymuję automatyczny email "Twoja aplikacja jest nadal rozpatrywana. Dziękujemy za cierpliwość."  
@@ -825,16 +845,19 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Cel Biznesowy:** Wypełnienie 40% nowych wakatów kandydatami wewnętrznymi w ciągu 9 miesięcy.
 
 **Warunki Wstępne:**  
+
 - Pracownik ma uzupełniony profil umiejętności  
 - Istnieją otwarte wakaty wewnętrzne
 
 **Warunki Końcowe:**  
+
 - Pracownik widzi dopasowane oferty wewnętrzne  
 - Menedżer widzi zainteresowanych pracowników
 
 **Kryteria Akceptacji:**
 
 **WF-REK-004-01: Rekomendacje wakatów wewnętrznych (Scenariusz główny)**  
+
 - **Given:** Jestem pracownikiem z profilem zawierającym: Python (Expert), SQL (Advanced), 3 lata doświadczenia  
 - **And:** W firmie otwarto wakat "Senior Data Engineer" wymagający Python i SQL  
 - **When:** Otwieram sekcję "Możliwości rozwoju" w portalu  
@@ -842,12 +865,14 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Widzę które moje kompetencje pasują, a czego mi brakuje
 
 **WF-REK-004-02: Aplikowanie na wakat wewnętrzny (Scenariusz główny)**  
+
 - **Given:** Znalazłem interesujący wakat wewnętrzny, mój bezpośredni przełożony skonfigurował zgodę na rekrutację wewnętrzną  
 - **When:** Klikam "Wyraź zainteresowanie"  
 - **Then:** Mój menedżer i HR otrzymują powiadomienie  
 - **And:** Rekruter prowadzący wakat widzi mnie na liście zainteresowanych z pełnym profilem
 
 **WF-REK-004-03: Brak zgody menedżera na rekrutację wewnętrzną (Scenariusz alternatywny)**  
+
 - **Given:** Mój bezpośredni przełożony ustawił blokadę rekrutacji wewnętrznej dla swojego zespołu  
 - **When:** Próbuję kliknąć "Wyraź zainteresowanie"  
 - **Then:** System wyświetla komunikat "Aplikowanie na wewnętrzne wakaty wymaga rozmowy z Twoim menedżerem. Skontaktuj się z HR jeśli chcesz omówić możliwości."
@@ -866,16 +891,19 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Cel Biznesowy:** Zwiększenie udziału zatrudnień z poleceń z 8% do 25% w ciągu 9 miesięcy, skrócenie czasu zatrudnienia kandydatów z polecenia o 30%.
 
 **Warunki Wstępne:**  
+
 - Pracownik jest zatrudniony min. 3 miesiące  
 - Istnieją otwarte wakaty objęte programem poleceń
 
 **Warunki Końcowe:**  
+
 - Polecenie jest zarejestrowane  
 - Pracownik może śledzić status
 
 **Kryteria Akceptacji:**
 
 **WF-REK-005-01: Polecenie kandydata (Scenariusz główny)**  
+
 - **Given:** Jestem pracownikiem z 6-miesięcznym stażem, mam znajomego szukającego pracy  
 - **And:** Istnieje otwarty wakat "Frontend Developer" z bonusem za polecenie 5000 PLN  
 - **When:** Wchodzę w sekcję "Poleć znajomego", wybieram wakat i podaję dane znajomego (imię, email, opcjonalnie CV)  
@@ -883,12 +911,14 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Polecenie pojawia się w moim panelu "Moje polecenia" ze statusem "Wysłane zaproszenie"
 
 **WF-REK-005-02: Śledzenie statusu polecenia (Scenariusz główny)**  
+
 - **Given:** Poleciłem kandydata tydzień temu, kandydat złożył aplikację  
 - **When:** Wchodzę w "Moje polecenia"  
 - **Then:** Widzę aktualny status: "Kandydat aplikował → W ocenie → [następne etapy]"  
 - **And:** Widzę estymowaną datę decyzji i aktualny poziom mojego bonusu (np. "Bonus: 2500 PLN zablokowane, wypłata po okresie próbnym")
 
 **WF-REK-005-03: Automatyczne naliczenie bonusu (Scenariusz główny)**  
+
 - **Given:** Polecony kandydat został zatrudniony i ukończył 3-miesięczny okres próbny  
 - **When:** Mija data końca okresu próbnego  
 - **Then:** Mój bonus zmienia status na "Do wypłaty"  
@@ -896,6 +926,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Dostaję powiadomienie "Gratulacje! Twój bonus za polecenie [imię] jest gotowy do wypłaty."
 
 **WF-REK-005-04: Polecenie osoby już w bazie (Scenariusz alternatywny)**  
+
 - **Given:** Próbuję polecić znajomego którego email już istnieje w bazie kandydatów  
 - **When:** Podaję jego email  
 - **Then:** System informuje "Ten kandydat jest już w naszej bazie. Jeśli chcesz powiązać polecenie, skontaktuj się z HR."
@@ -914,16 +945,19 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Cel Biznesowy:** Zwiększenie różnorodności kandydatów zapraszanych na rozmowy o 30% w ciągu 6 miesięcy.
 
 **Warunki Wstępne:**  
+
 - HR Manager skonfigurował tryb anonimowy dla danego procesu rekrutacyjnego  
 - Kandydaci złożyli aplikacje
 
 **Warunki Końcowe:**  
+
 - Rekruter ocenia kandydatów bez dostępu do danych wrażliwych  
 - Dane są ujawniane dopiero na etapie zaproszenia na rozmowę
 
 **Kryteria Akceptacji:**
 
 **WF-REK-006-01: Widok anonimowy dla rekrutera (Scenariusz główny)**  
+
 - **Given:** Jestem rekruterem, proces ma włączony tryb anonimowy  
 - **When:** Otwieram listę kandydatów  
 - **Then:** Zamiast imion widzę identyfikatory (np. "Kandydat #A7F3")  
@@ -931,12 +965,14 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Widzę: listę kompetencji, lata doświadczenia (bez dat), opis doświadczenia
 
 **WF-REK-006-02: Ujawnienie danych przy zaproszeniu (Scenariusz główny)**  
+
 - **Given:** Zdecydowałem się zaprosić Kandydata #A7F3 na rozmowę  
 - **When:** Klikam "Zaproś na rozmowę"  
 - **Then:** System ujawnia pełne dane kandydata (imię, kontakt)  
 - **And:** Mogę teraz wysłać spersonalizowane zaproszenie
 
 **WF-REK-006-03: Analiza bias w ogłoszeniach (Scenariusz główny)**  
+
 - **Given:** Tworzę nowe ogłoszenie o pracę  
 - **When:** Zapisuję treść ogłoszenia  
 - **Then:** System analizuje tekst pod kątem language bias (np. agresywny język kojarzy się z męskimi kandydatami)  
@@ -958,10 +994,12 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Cel Biznesowy:** Redukcja czasu pracy działu kadr na obsługę dokumentacji nowo zatrudnionych o 80% w ciągu 3 miesięcy.
 
 **Warunki Wstępne:**  
+
 - Kandydat zaakceptował ofertę pracy
 - HR przygotował pakiet dokumentów do podpisu
 
 **Warunki Końcowe:**  
+
 - Wszystkie dokumenty są podpisane elektronicznie
 - Dokumenty są zarchiwizowane w systemie
 - Dział kadr może wygenerować raport zgodności
@@ -969,6 +1007,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Kryteria Akceptacji:**
 
 **WF-ONB-001-01: Podpisanie umowy elektronicznie (Scenariusz główny)**  
+
 - **Given:** Jestem nowo zatrudnionym pracownikiem, HR wysłał mi pakiet dokumentów do podpisu
 - **When:** Otwieram link z emaila, loguję się, przeglądam dokumenty i klikam "Podpisz"
 - **Then:** System wysyła mnie do dostawcy e-podpisu (np. Autenti)
@@ -976,6 +1015,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Otrzymuję email z podpisanymi dokumentami w PDF
 
 **WF-ONB-001-02: Automatyczne generowanie umowy (Scenariusz główny)**  
+
 - **Given:** Jestem HR Adminem, kandydat Jan Kowalski zaakceptował ofertę na stanowisko Senior Developer z wynagrodzeniem 20 000 PLN B2B
 - **When:** Klikam "Generuj umowę" i wybieram szablon "Umowa B2B IT"
 - **Then:** System automatycznie wypełnia szablon danymi: imię, nazwisko, stanowisko, wynagrodzenie, data rozpoczęcia
@@ -983,12 +1023,14 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Dokument jest zapisany w formacie pozwalającym na e-podpis
 
 **WF-ONB-001-03: Przypomnienie o niepodpisanych dokumentach (Scenariusz alternatywny)**  
+
 - **Given:** Wysłano dokumenty do podpisu 3 dni temu, pracownik ich nie podpisał
 - **When:** Mija 72 godziny od wysłania
 - **Then:** System wysyła automatyczne przypomnienie do pracownika
 - **And:** HR widzi alert w panelu o zaległych dokumentach
 
 **WF-ONB-001-04: Wygaśnięcie linku do podpisu (Scenariusz wyjątkowy)**  
+
 - **Given:** Link do podpisu dokumentów był ważny 7 dni, pracownik próbuje go użyć po 10 dniach
 - **When:** Klika w stary link
 - **Then:** System wyświetla komunikat "Link wygasł. Skontaktuj się z działem HR aby otrzymać nowy link."
@@ -1008,16 +1050,19 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Cel Biznesowy:** Skrócenie Time-to-Productivity nowych programistów z 3 miesięcy do 6 tygodni w ciągu roku.
 
 **Warunki Wstępne:**  
+
 - Pracownik rozpoczął pracę
 - HR/Menedżer przypisał odpowiednią ścieżkę onboardingu
 
 **Warunki Końcowe:**  
+
 - Pracownik ukończył wszystkie obowiązkowe moduły
 - Menedżer ma raport z postępów onboardingu
 
 **Kryteria Akceptacji:**
 
 **WF-ONB-002-01: Start programu onboardingowego (Scenariusz główny)**  
+
 - **Given:** Jestem nowym programistą, to mój pierwszy dzień pracy
 - **When:** Loguję się do HRflow
 - **Then:** Widzę spersonalizowaną ścieżkę onboardingową "Developer Onboarding" z etapami: Tydzień 1-2 (Podstawy), Tydzień 3-4 (Projekt), Tydzień 5-6 (Samodzielność)
@@ -1025,6 +1070,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Widzę progress bar pokazujący 0% ukończenia
 
 **WF-ONB-002-02: Wykonanie zadania onboardingowego (Scenariusz główny)**  
+
 - **Given:** Mam zadanie "Skonfiguruj środowisko deweloperskie" z checklistą: zainstaluj IDE, sklonuj repo, uruchom projekt lokalnie
 - **When:** Wykonuję kolejne kroki i zaznaczam je jako ukończone
 - **Then:** Mój progress rośnie, zdobywam punkty XP (np. 50 XP za zadanie)
@@ -1032,6 +1078,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Mój menedżer widzi aktualizację postępu w swoim panelu
 
 **WF-ONB-002-03: Integracja z repozytoriami kodu (Scenariusz główny)**  
+
 - **Given:** Mam zadanie "Zrób pierwszy commit do repozytorium projektu"
 - **When:** Robię commit i push do repo (GitHub/GitLab)
 - **Then:** System automatycznie wykrywa commit poprzez webhook
@@ -1039,6 +1086,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Dostaję badge "First Commit" i bonus XP
 
 **WF-ONB-002-04: Quiz sprawdzający wiedzę (Scenariusz główny)**  
+
 - **Given:** Ukończyłem moduł "Architektura systemu"
 - **When:** Przechodzę do quizu końcowego
 - **Then:** Muszę odpowiedzieć na 10 pytań (próg zaliczenia: 70%)
@@ -1046,6 +1094,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Jeśli nie zdam, mogę powtórzyć quiz po 24h lub przejrzeć materiały ponownie
 
 **WF-ONB-002-05: Buddy system (Scenariusz główny)**  
+
 - **Given:** Menedżer przypisał mi "buddy'ego" - doświadczonego pracownika
 - **When:** Mam pytanie lub problem
 - **Then:** Widzę w systemie kto jest moim buddy i mogę wysłać mu wiadomość bezpośrednio z HRflow
@@ -1068,10 +1117,12 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Cel Biznesowy:** Przeszkolenie 60% kadry technicznej z nowych technologii chmurowych w ciągu 12 miesięcy, redukcja wydatków na zewnętrznych konsultantów o 200 tys. PLN.
 
 **Warunki Wstępne:**  
+
 - Pracownik ma uzupełniony profil kompetencji
 - Dostępne są szkolenia w bibliotece LMS
 
 **Warunki Końcowe:**  
+
 - Pracownik ukończył szkolenie
 - Kompetencja dodana do profilu
 - Menedżer ma raport z rozwoju zespołu
@@ -1079,6 +1130,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Kryteria Akceptacji:**
 
 **WF-DEV-001-01: Rekomendacje szkoleń (Scenariusz główny)**  
+
 - **Given:** Jestem Python Developerem, mój cel na rok to "nauczyć się AWS"
 - **And:** Na moim stanowisku wymagane jest AWS (którego nie mam w profilu)
 - **When:** Otwieram sekcję "Mój rozwój"
@@ -1086,6 +1138,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Przy każdym szkoleniu widzę szacowany czas, poziom trudności i jak wypełnia moje luki
 
 **WF-DEV-001-02: Ukończenie szkolenia z certyfikatem (Scenariusz główny)**  
+
 - **Given:** Zapisałem się na szkolenie "AWS Fundamentals" (8 godzin, 5 modułów)
 - **When:** Ukończę wszystkie moduły i zdam test końcowy (min. 80%)
 - **Then:** Otrzymuję certyfikat PDF do pobrania
@@ -1093,6 +1146,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Mój menedżer otrzymuje powiadomienie o ukończonym szkoleniu
 
 **WF-DEV-001-03: Ścieżka rozwoju (Learning Path) (Scenariusz główny)**  
+
 - **Given:** Chcę zostać Tech Leadem w ciągu 2 lat
 - **When:** Wybieram cel "Tech Lead" w kreatorze ścieżki
 - **Then:** System generuje spersonalizowaną ścieżkę z sekwencją szkoleń: techniczne → leadership → communication
@@ -1100,6 +1154,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Mogę zapisać ścieżkę i śledzić postęp
 
 **WF-DEV-001-04: Brak czasu na szkolenie (Scenariusz alternatywny)**  
+
 - **Given:** Zapisałem się na szkolenie, ale nie mam czasu w godzinach pracy
 - **When:** Rozmawiam z menedżerem przez system (sekcja "Prośba o czas na rozwój")
 - **Then:** Menedżer dostaje notyfikację i może zaakceptować/odrzucić prośbę
@@ -1119,16 +1174,19 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Cel Biznesowy:** Zapewnienie 100% transparentności powiązań między celami indywidualnymi a strategią firmy w ciągu 3 miesięcy.
 
 **Warunki Wstępne:**  
+
 - Zarząd zdefiniował cele strategiczne firmy
 - Trwa kwartał (cykl OKR)
 
 **Warunki Końcowe:**  
+
 - Cele są skaskadowane na wszystkie poziomy
 - Postęp jest mierzony i widoczny
 
 **Kryteria Akceptacji:**
 
 **WF-DEV-002-01: Tworzenie OKR indywidualnego (Scenariusz główny)**  
+
 - **Given:** Jestem pracownikiem, rozpoczyna się nowy kwartał
 - **And:** Mój menedżer opublikował cele zespołu
 - **When:** Tworzę swój OKR z Objective "Poprawić wydajność API" i Key Results: "Zmniejszyć response time o 30%", "Osiągnąć 99.9% uptime"
@@ -1137,6 +1195,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Po akceptacji, mój OKR jest widoczny w drzewie celów
 
 **WF-DEV-002-02: Wizualizacja drzewa celów (Scenariusz główny)**  
+
 - **Given:** Jestem pracownikiem
 - **When:** Otwieram "Drzewo OKR"
 - **Then:** Widzę hierarchiczną wizualizację: Cele Firmy → Cele Mojego Działu → Cele Zespołu → Moje Cele
@@ -1144,6 +1203,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Mogę kliknąć w dowolny cel aby zobaczyć szczegóły
 
 **WF-DEV-002-03: Aktualizacja postępu Key Result (Scenariusz główny)**  
+
 - **Given:** Mój Key Result to "Zmniejszyć response time o 30%", obecny postęp to 60%
 - **When:** Zmierzę że response time spadł o kolejne 10% (łącznie 20%)
 - **Then:** Aktualizuję wartość w systemie, postęp zmienia się na ~67%
@@ -1151,6 +1211,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Dodaję komentarz z wyjaśnieniem co zrobiłem
 
 **WF-DEV-002-04: Check-in tygodniowy (Scenariusz główny)**  
+
 - **Given:** Jest piątek, system przypomina o aktualizacji OKR
 - **When:** Wchodzę w sekcję "Check-in"
 - **Then:** Widzę formularz z moimi Key Results i mogę szybko zaktualizować postęp
@@ -1171,16 +1232,19 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Cel Biznesowy:** Przejście z rocznych ocen na system ciągłego feedbacku, uzyskanie średnio 4 opinii peer-to-peer na pracownika miesięcznie w ciągu 6 miesięcy.
 
 **Warunki Wstępne:**  
+
 - Pracownicy są przypisani do zespołów
 - System feedbacku jest aktywny
 
 **Warunki Końcowe:**  
+
 - Feedback jest zapisany i dostępny dla odbiorcy
 - Statystyki feedbacku są widoczne dla HR
 
 **Kryteria Akceptacji:**
 
 **WF-DEV-003-01: Wysłanie szybkiego feedbacku (Scenariusz główny)**  
+
 - **Given:** Kolega z zespołu pomógł mi rozwiązać trudny problem
 - **When:** Klikam "Wyślij kudos" przy jego profilu, wybieram kategorię "Pomoc zespołowa", piszę krótką wiadomość
 - **Then:** Kolega otrzymuje powiadomienie z moim feedbackiem
@@ -1188,6 +1252,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Zdobywa punkty do rankingu miesięcznego "Pomocni współpracownicy"
 
 **WF-DEV-003-02: Poproszenie o feedback (Scenariusz główny)**  
+
 - **Given:** Ukończyłem duży projekt i chcę wiedzieć jak mi poszło
 - **When:** Wysyłam prośbę o feedback do 3 osób z którymi pracowałem
 - **Then:** Każda osoba otrzymuje powiadomienie z prośbą
@@ -1195,6 +1260,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Po otrzymaniu feedbacku, widzę go w sekcji "Otrzymany feedback"
 
 **WF-DEV-003-03: Anonimowy feedback (Scenariusz alternatywny)**  
+
 - **Given:** Chcę dać konstruktywną krytykę, ale wolę pozostać anonimowy
 - **When:** Wysyłam feedback z zaznaczoną opcją "Wyślij anonimowo"
 - **Then:** Odbiorca widzi treść feedbacku bez informacji kto go wysłał
@@ -1202,6 +1268,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** W statystykach HR widać tylko że był anonimowy feedback
 
 **WF-DEV-003-04: Integracja ze Slackiem/Teams (Scenariusz główny)**  
+
 - **Given:** Mam zainstalowaną integrację HRflow ze Slackiem
 - **When:** Napiszę w Slacku "/kudos @jan.kowalski Świetna robota z prezentacją!"
 - **Then:** Feedback trafia do systemu HRflow
@@ -1223,17 +1290,20 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Cel Biznesowy:** Obniżenie wskaźnika rotacji kluczowych specjalistów o 15% w ciągu roku, poprzez wykrywanie ryzyka odejścia na 30 dni przed rezygnacją.
 
 **Warunki Wstępne:**
+
 - Pracownik jest w systemie min. 6 miesięcy (dane do analizy)
 - Skonfigurowane ankiety pulsujące
 - Model ML wytrenowany na danych historycznych
 
 **Warunki Końcowe:**
+
 - HR/Menedżer widzi alert o ryzyku
 - Uruchomiony proces retencyjny
 
 **Kryteria Akceptacji:**
 
 **WF-ANA-001-01: Dashboard ryzyka rotacji (Scenariusz główny)**
+
 - **Given:** Jestem HR Managerem z dostępem do analityki
 - **When:** Otwieram dashboard "Retention Risk"
 - **Then:** Widzę listę pracowników posortowaną wg ryzyka odejścia (%, kolor: zielony/żółty/czerwony)
@@ -1241,18 +1311,21 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Mogę filtrować po dziale, stanowisku, stażu
 
 **WF-ANA-001-02: Alert o wysokim ryzyku (Scenariusz główny)**
+
 - **Given:** Ryzyko odejścia programisty Jana Kowalskiego wzrosło z 40% do 75% (próg alertu: 70%)
 - **When:** System przelicza ryzyko (codziennie o 6:00)
 - **Then:** Menedżer Jana i HR otrzymują email "Alert: Wysokie ryzyko odejścia - Jan Kowalski"
 - **And:** W alercie są sugerowane działania: "Zaplanuj rozmowę 1:1", "Sprawdź możliwości awansu", "Przejrzyj wynagrodzenie vs. rynek"
 
 **WF-ANA-001-03: Czynniki wpływające na ryzyko (Scenariusz główny)**
+
 - **Given:** Kliknę w konkretnego pracownika na dashboardzie
 - **When:** Otwieram szczegóły
 - **Then:** Widzę rozbicie ryzyka na czynniki z wagami: np. "Brak podwyżki 18 miesięcy (waga 30%)", "Niska ocena w ankiecie pulsującej (waga 25%)", "Brak rozwoju kompetencji (waga 20%)"
 - **And:** Przy każdym czynniku widzę rekomendację działania
 
 **WF-ANA-001-04: Ankieta pulsująca (Scenariusz główny)**
+
 - **Given:** Jestem pracownikiem, jest pierwszy poniedziałek miesiąca
 - **When:** Dostaję powiadomienie o ankiecie
 - **Then:** Ankieta ma max 5 pytań (np. "Jak oceniasz swoje samopoczucie w pracy 1-10?", "Czy czujesz się doceniany?")
@@ -1273,10 +1346,12 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Cel Biznesowy:** Zidentyfikowanie następców dla 90% kluczowych stanowisk menedżerskich w ciągu 6 miesięcy.
 
 **Warunki Wstępne:**
+
 - Menedżer ma zespół min. 3 osoby
 - Trwa okres ocen (np. koniec kwartału)
 
 **Warunki Końcowe:**
+
 - Każdy pracownik ma przypisaną pozycję w 9-box
 - HR ma raport talent pool
 - Zdefiniowane plany rozwojowe dla High Potentials
@@ -1284,6 +1359,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Kryteria Akceptacji:**
 
 **WF-ANA-002-01: Ocena pracownika w 9-box (Scenariusz główny)**
+
 - **Given:** Jestem menedżerem, rozpoczął się okres ocen
 - **When:** Otwieram profil pracownika w sekcji "Ocena potencjału"
 - **Then:** Widzę matrycę 3x3 (oś X: Performance Low/Medium/High, oś Y: Potential Low/Medium/High)
@@ -1291,6 +1367,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** System automatycznie umieszcza pracownika w odpowiedniej kratce
 
 **WF-ANA-002-02: Widok zespołu na 9-box (Scenariusz główny)**
+
 - **Given:** Oceniłem wszystkich pracowników swojego zespołu
 - **When:** Otwieram widok "Mój zespół - Talent Grid"
 - **Then:** Widzę wszystkich pracowników rozłożonych na matrycy (jako avatary lub inicjały)
@@ -1298,6 +1375,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Mogę porównać z poprzednim kwartałem (kto awansował, kto spadł)
 
 **WF-ANA-002-03: Planowanie sukcesji (Scenariusz główny)**
+
 - **Given:** Jestem HR Managerem, mam zdefiniowane kluczowe stanowiska w firmie
 - **When:** Otwieram moduł "Planowanie sukcesji"
 - **Then:** Widzę listę kluczowych stanowisk z informacją: obecny holder, gotowość następcy (czerwony/żółty/zielony), kandydaci na następcę
@@ -1320,10 +1398,12 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Cel Biznesowy:** Zwiększenie utylizacji budżetu szkoleniowo-benefitowego do 95% w ciągu roku (z obecnych 60%).
 
 **Warunki Wstępne:**
+
 - Pracownik ma przypisany budżet punktów
 - Skonfigurowane są kategorie i dostawcy benefitów
 
 **Warunki Końcowe:**
+
 - Pracownik wykorzystał punkty
 - Zamówienie trafiło do dostawcy
 - HR ma raport wykorzystania
@@ -1331,6 +1411,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Kryteria Akceptacji:**
 
 **WF-BEN-001-01: Przeglądanie kafeterii (Scenariusz główny)**
+
 - **Given:** Jestem pracownikiem z budżetem 500 punktów miesięcznie
 - **When:** Otwieram "Kafeterię benefitów"
 - **Then:** Widzę kategorie: Zdrowie, Sport, Kultura, Rozwój, Lifestyle
@@ -1338,6 +1419,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Na górze widzę moje saldo: "Dostępne: 500 pkt, Wykorzystane: 0 pkt"
 
 **WF-BEN-001-02: Zakup benefitu (Scenariusz główny)**
+
 - **Given:** Mam 500 punktów, chcę kupić karnet na siłownię za 200 pkt
 - **When:** Wybieram "MultiSport Classic", klikam "Zamów"
 - **Then:** Punkty są pobierane z mojego salda (zostaje 300 pkt)
@@ -1345,6 +1427,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** W historii widzę transakcję
 
 **WF-BEN-001-03: Brak wystarczających punktów (Scenariusz alternatywny)**
+
 - **Given:** Mam 100 punktów, próbuję kupić benefit za 200 pkt
 - **When:** Klikam "Zamów"
 - **Then:** System wyświetla "Niewystarczająca liczba punktów. Brakuje: 100 pkt"
@@ -1366,10 +1449,12 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Cel Biznesowy:** Zautomatyzowanie procesu odbierania dostępów do systemów IT w 100% przypadków w momencie rozwiązania umowy (redukcja ryzyka wycieku danych).
 
 **Warunki Wstępne:**
+
 - Pracownik ma zakończoną umowę (data końca zatrudnienia)
 - Skonfigurowana integracja z AD/LDAP i innymi systemami
 
 **Warunki Końcowe:**
+
 - Wszystkie dostępy są odebrane
 - IT ma raport z wykonanych akcji
 - Konto jest zarchiwizowane (nie usunięte)
@@ -1377,6 +1462,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Kryteria Akceptacji:**
 
 **WF-OFF-001-01: Automatyczna dezaktywacja w dniu zakończenia (Scenariusz główny)**
+
 - **Given:** Pracownik Jan Kowalski ma ostatni dzień pracy 31.01.2025
 - **When:** Nastaje 31.01.2025, godzina 23:59
 - **Then:** System automatycznie: wyłącza konto AD, odbiera dostęp do email, dezaktywuje VPN, odbiera dostępy do systemów wewnętrznych (Jira, Confluence, GitHub)
@@ -1384,6 +1470,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Menedżer otrzymuje powiadomienie "Dostępy Jana Kowalskiego zostały odebrane"
 
 **WF-OFF-001-02: Lista kontrolna offboardingu (Scenariusz główny)**
+
 - **Given:** Jestem HR Adminem, pracownik złożył wypowiedzenie
 - **When:** Rozpoczynam proces offboardingu
 - **Then:** System generuje checklistę: zwrot sprzętu, przekazanie obowiązków, rozmowa exit interview, dostępy do odebrania
@@ -1391,6 +1478,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** System śledzi wykonanie i przypomina o zaległych zadaniach
 
 **WF-OFF-001-03: Exit interview (Scenariusz główny)**
+
 - **Given:** Pracownik jest w okresie wypowiedzenia
 - **When:** HR wysyła zaproszenie na exit interview
 - **Then:** Pracownik może wypełnić ankietę online lub umówić się na rozmowę
@@ -1411,16 +1499,19 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 **Cel Biznesowy:** Konwersja 20% odchodzących pracowników do programu Alumni w celu przyszłej rekrutacji (boomerang hiring).
 
 **Warunki Wstępne:**
+
 - Pracownik zakończył zatrudnienie
 - Wyraził zgodę na udział w programie Alumni
 
 **Warunki Końcowe:**
+
 - Były pracownik ma konto Alumni
 - Może przeglądać oferty i utrzymywać kontakt
 
 **Kryteria Akceptacji:**
 
 **WF-OFF-002-01: Dołączenie do programu Alumni (Scenariusz główny)**
+
 - **Given:** Kończę pracę w firmie, podczas offboardingu HR pyta czy chcę dołączyć do Alumni
 - **When:** Wyrażam zgodę i podaję prywatny email
 - **Then:** Otrzymuję link do aktywacji konta Alumni
@@ -1428,6 +1519,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **And:** Dane wrażliwe (wynagrodzenie, oceny) są usunięte
 
 **WF-OFF-002-02: Portal Alumni - oferty pracy (Scenariusz główny)**
+
 - **Given:** Jestem w programie Alumni od 6 miesięcy
 - **When:** Loguję się do portalu Alumni
 - **Then:** Widzę aktualne oferty pracy w firmie z oznaczeniem "Dla Alumni"
@@ -1462,12 +1554,14 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 #### Uzasadnienie priorytetów
 
 **Must Have (MVP):**
+
 - **Screening CV** - bez tego system nie ma sensu, to core funkcjonalność
 - **Portal Kandydata** - kluczowe dla Candidate Experience (cel: cNPS +50)
 - **Cyfrowy obieg dokumentów** - bezpośrednio wpływa na cel redukcji czasu kadr o 80%
 - **Odbieranie dostępów** - krytyczne dla bezpieczeństwa, zero tolerancji na błędy
 
 **Should Have (v1.1):**
+
 - **Semantic Matching** - zwiększa wartość screeningu, ale wymaga danych do treningu
 - **System poleceń** - ważny cel biznesowy, ale firma może funkcjonować bez niego
 - **Gamifikowany onboarding** - wpływa na Time-to-Productivity, ale można zacząć od prostszej wersji
@@ -1475,6 +1569,7 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **Continuous Feedback** - kulturowa zmiana wymaga czasu
 
 **Could Have (v1.2+):**
+
 - **Giełda Talentów** - wymaga dojrzałych danych o kompetencjach
 - **Anonimizacja D&I** - wartościowe, ale nie blokuje rekrutacji
 - **OKR** - wymaga buy-in od zarządu i zmiany kultury
@@ -1482,10 +1577,12 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 - **9-box Grid** - uzupełnia Retention AI
 
 **Won't Have (poza MVP):**
+
 - **Kafeteria benefitowa** - wymaga integracji z wieloma dostawcami
 - **Program Alumni** - nice-to-have, niski priorytet biznesowy
 
 ---
+
 ## 5. Atrybuty Jakościowe
 
 ### 5.1. Jakość Wykonania (Runtime Quality)
@@ -1600,7 +1697,6 @@ def schedule_interview(candidate_email, recruiter_email, datetime_utc, duration_
 | **6 (Średni)** | Skalowalność (WNF-SKAL-*) | Ważne dla wzrostu, ale MVP może mieć limity |
 | **7 (Niski)** | Modyfikowalność (WNF-MOD-*) | Inwestycja w przyszłość, nie blokuje MVP |
 | **8 (Niski)** | Testowalność (WNF-TEST-*) | Ważne, ale coverage można budować iteracyjnie |
-
 
 ## 6. Odkrywanie i Analiza Wymagań
 
@@ -1730,24 +1826,6 @@ Na podstawie analizy porównawczej podjęliśmy następujące decyzje:
 | Video interviews (built-in) | Integracja z Zoom/Teams wystarczy, nie budujemy video infra |
 | Payroll | Poza zakresem, integracja z dedykowanymi systemami |
 | Time tracking | Zbyt wiele komplikacji prawnych, osobny rynek |
-
-**Pozycjonowanie HRflow vs. konkurencja:**
-
-```
-                  CENA
-                    ↑
-         Drogi      │      Workday
-        (Enterprise)│      SAP SF
-                    │
-                    │         Greenhouse
-                    │         Lever
-        ────────────┼────────────────────→ FUNKCJONALNOŚĆ
-                    │  Personio    Pełny cykl życia
-         BambooHR   │  HRflow ←── (nasz cel)
-                    │
-        Tani (SMB)  │
-                    │
-```
 
 **Nasza unikalna propozycja wartości:**
 
@@ -1897,6 +1975,7 @@ Na podstawie analizy porównawczej podjęliśmy następujące decyzje:
 #### Persona 1: Anna Wiśniewska - Rekruterka IT
 
 **Dane demograficzne:**
+
 - Wiek: 28 lat
 - Stanowisko: IT Recruiter w firmie software house (150 pracowników)
 - Doświadczenie: 3 lata w rekrutacji IT
@@ -1908,12 +1987,14 @@ Na podstawie analizy porównawczej podjęliśmy następujące decyzje:
 > *"Każdego dnia przeglądam setki CV. Potrzebuję narzędzia, które odsieje tych, którzy kompletnie nie pasują, ale nie przegapi diamentów ukrytych w niestandardowych CV."*
 
 **Cele i motywacje:**
+
 - Zamykać procesy rekrutacyjne szybciej (presja na Time-to-Hire)
 - Dostarczać hiring managerom kandydatów wysokiej jakości
 - Budować pozytywne relacje z kandydatami (employer branding)
 - Rozwijać się w kierunku HR Business Partner
 
 **Frustracje i bóle:**
+
 - Tonę w CV - 80% to spam lub kompletnie niedopasowani kandydaci
 - Koordynacja terminów rozmów to koszmar (ping-pong mailowy)
 - Hiring managerowie zmieniają wymagania w trakcie procesu
@@ -1921,6 +2002,7 @@ Na podstawie analizy porównawczej podjęliśmy następujące decyzje:
 - Nasz ATS to Excel z lat 90-tych
 
 **Zachowania technologiczne:**
+
 - Power user LinkedIn Recruiter
 - Używa Calendly do umawiania spotkań (prywatnie)
 - Slack do komunikacji wewnętrznej
@@ -1934,6 +2016,7 @@ Anna zaczyna dzień od sprawdzenia dashboardu - widzi 47 nowych aplikacji na sta
 #### Persona 2: Marek Nowicki - Nowy Programista (Junior)
 
 **Dane demograficzne:**
+
 - Wiek: 25 lat
 - Stanowisko: Junior Backend Developer (właśnie zatrudniony)
 - Doświadczenie: 1 rok (bootcamp + staż)
@@ -1945,18 +2028,21 @@ Anna zaczyna dzień od sprawdzenia dashboardu - widzi 47 nowych aplikacji na sta
 > *"Pierwszy tydzień w nowej pracy to chaos. Loginy, hasła, dokumenty, spotkania... Chciałbym mieć jedno miejsce, gdzie wszystko jest ogarnięte."*
 
 **Cele i motywacje:**
+
 - Szybko wdrożyć się w projekt i zacząć dowozić wartość
 - Nie wyglądać na niekompetentnego przed zespołem
 - Nauczyć się stack'u technicznego firmy (nowy dla niego)
 - Zdobyć doświadczenie na CV
 
 **Frustracje i bóle:**
+
 - Nie wiem do kogo się zwrócić z pytaniem
 - Dokumentacja jest rozproszona (Confluence, Google Docs, README, Slack)
 - Nie wiem czy robię postępy - nikt mi nie mówi
 - Dużo formalności (NDA, umowa, sprzęt) - gubię się
 
 **Zachowania technologiczne:**
+
 - Digital native - wszystko na telefonie
 - Gamifikacja go motywuje (Duolingo streak!)
 - Preferuje video tutoriale nad dokumentację tekstową
@@ -1970,6 +2056,7 @@ Marek dostaje maila "Witaj w firmie!" z linkiem do HRflow. Loguje się i widzi s
 #### Persona 3: Katarzyna Mazur - HR Manager
 
 **Dane demograficzne:**
+
 - Wiek: 42 lata
 - Stanowisko: HR Manager w firmie produkcyjnej (400 pracowników)
 - Doświadczenie: 15 lat w HR
@@ -1981,18 +2068,21 @@ Marek dostaje maila "Witaj w firmie!" z linkiem do HRflow. Loguje się i widzi s
 > *"Zarząd pyta mnie o rotację, koszty rekrutacji, development pipeline... Zbieranie tych danych z Exceli to koszmar. Potrzebuję jednego źródła prawdy."*
 
 **Cele i motywacje:**
+
 - Zmniejszyć rotację (obecnie 18%, cel: 12%)
 - Mieć argumenty liczbowe w rozmowach z zarządem
 - Zbudować employer brand firmy
 - Rozwinąć zespół HR (ma 4 osoby)
 
 **Frustracje i bóle:**
+
 - Dane są w 10 różnych miejscach (payroll, ATS, Excel, papier)
 - Rotacja w produkcji to czarna dziura (nie wiem dlaczego odchodzą)
 - Menedżerowie nie prowadzą 1:1 z ludźmi
 - Brak budżetu na duże systemy HR (Workday to kosmos)
 
 **Zachowania technologiczne:**
+
 - Poweruser Excel (pivot tables, VLOOKUP)
 - Używa PowerBI do raportowania (podstawy)
 - Woli spotkania twarzą w twarz niż Slack
@@ -2006,6 +2096,7 @@ Katarzyna otwiera dashboard o 8 rano. Widzi alert: "Ryzyko odejścia: 3 pracowni
 #### Persona 4: Tomasz Kowalczyk - Menedżer Zespołu
 
 **Dane demograficzne:**
+
 - Wiek: 35 lat
 - Stanowisko: Sales Manager (zespół 12 osób)
 - Doświadczenie: 8 lat w sprzedaży, 3 lata jako menedżer
@@ -2017,18 +2108,21 @@ Katarzyna otwiera dashboard o 8 rano. Widzi alert: "Ryzyko odejścia: 3 pracowni
 > *"Chcę wiedzieć, kto w moim zespole ma potencjał na lidera, a kto może odejść. I chcę to wiedzieć zanim będzie za późno."*
 
 **Cele i motywacje:**
+
 - Dowieźć target sprzedażowy zespołu
 - Rozwinąć top performerów na liderów
 - Zatrzymać najlepszych (konkurencja kusi)
 - Mieć czas na strategię, nie tylko gaszenie pożarów
 
 **Frustracje i bóle:**
+
 - Rozmowy rozwojowe z ludźmi to "kiedyś zrobię"
 - Nie wiem kto naprawdę jest niezadowolony (dowiaduję się jak składa wypowiedzenie)
 - Roczne oceny to fikcja - wypełniam bo muszę
 - Feedback od zespołu? "Wszystko ok, szefie"
 
 **Zachowania technologiczne:**
+
 - CRM (Salesforce) to jego drugie biurko
 - Smartfon zawsze w ręku
 - Lubi dashboardy i wykresy (łatwo pokazać zarządowi)
