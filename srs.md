@@ -260,80 +260,80 @@ Tomek zarządza 12-osobowym zespołem sprzedaży. Potrzebuje prostych narzędzi 
 
 #### Ograniczenia technologiczne
 
-| Kategoria        | Ograniczenie                           | Uzasadnienie                         |
-|------------------|----------------------------------------|--------------------------------------|
-| **Backend**      | Python 3.11+ / FastAPI lub Node.js 20+ | Wymagana dobra obsługa ML i async    |
-| **Frontend**     | React 18+ / TypeScript                 | Standard rynkowy, duża społeczność   |
-| **Baza danych**  | PostgreSQL 15+                         | Wsparcie dla JSON, full-text search  |
-| **Cache/Queue**  | Redis                                  | Sesje, kolejki zadań, real-time      |
-| **ML/AI**        | Python + scikit-learn / spaCy          | Matching Engine, Retention AI        |
-| **Wyszukiwarka** | Elasticsearch                          | Wyszukiwanie semantyczne CV          |
-| **Kontenery**    | Docker + Docker Compose                | Deployment, środowiska deweloperskie |
-| **Hosting**      | Minimum 8GB RAM, 4 vCPU dla MVP        | Wymagania ML i Elasticsearch         |
+| Kategoria                | Ograniczenie                                                                        | Uzasadnienie i Wpływ na Architekturę                                                                                                                                                                                                                                                                               |
+|--------------------------|-------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Architektura Backend** | Architektura oparta na API (REST lub GraphQL) z obsługą asynchroniczności           | **Dlaczego:** System musi obsługiwać wiele operacji w tle (np. parsowanie CV, powiadomienia) bez blokowania interfejsu.<br>**Wpływ:** Wymusza odseparowanie warstwy prezentacji od logiki biznesowej, konieczność zarządzania kontraktami API (np. OpenAPI/Swagger) oraz wdrożenie mechanizmów *non-blocking I/O*. |
+| **Technologia Backend**  | Język programowania wysokiego poziomu z dojrzałym ekosystemem bibliotek ML/AI       | **Dlaczego:** Kluczowe funkcje (Matching, Retention) wymagają algorytmów analitycznych.<br>**Wpływ:** Eliminuje konieczność tworzenia "mikroserwisów w innym języku" tylko dla AI. Architektura monolityczna lub modularna w jednej technologii upraszcza stack.                                                   |
+| **Frontend**             | Nowoczesny framework typu SPA (Single Page Application)                             | **Dlaczego:** Wymagany interfejs zbliżony do aplikacji desktopowej (płynność, brak przeładowań).<br>**Wpływ:** Przeniesienie logiki renderowania na klienta, konieczność zabezpieczenia API (JWT/OAuth) i obsługi stanu aplikacji (State Management) po stronie przeglądarki.                                      |
+| **Baza danych**          | Relacyjna baza danych (RDBMS) ze wsparciem dla danych pół-ustrukturyzowanych (JSON) | **Dlaczego:** CV mają nieregularną strukturę, ale procesy kadrowe wymagają ścisłych relacji i transakcyjności.<br>**Wpływ:** Hybrydowy model danych (kolumny SQL + pola JSONB), co pozwala uniknąć skomplikowanych migracji przy zmianie struktury CV, zachowując spójność ACID.                                   |
+| **Cache/Queue**          | System in-memory data store oraz broker wiadomości                                  | **Dlaczego:** Operacje takie jak generowanie raportów czy wysyłka maili nie mogą być synchroniczne.<br>**Wpływ:** Wprowadzenie architektury producent-konsument (Worker Pattern). Zadania trafiają do kolejki, a interfejs zwraca "202 Accepted" zamiast czekać na wynik.                                          |
+| **Wyszukiwanie**         | Dedykowany silnik wyszukiwania pełnotekstowego (Full-text search)                   | **Dlaczego:** Standardowe zapytania SQL `LIKE` są niewydajne i nie obsługują synonimów/fleksji językowej.<br>**Wpływ:** Konieczność synchronizacji danych między główną bazą (SQL) a silnikiem wyszukiwania (indeksowanie zdarzeniowe lub cykliczne).                                                              |
+| **Infrastruktura**       | Konteneryzacja zgodna ze standardem OCI (Open Container Initiative)                 | **Dlaczego:** Zespół deweloperski pracuje na różnych systemach operacyjnych.<br>**Wpływ:** Całe środowisko (kod, baza, cache) musi być definiowalne jako kod (IaC), co eliminuje problem "u mnie działa" i przyspiesza onboarding nowych programistów.                                                             |
+| **Zasoby obliczeniowe**  | Architektura zoptymalizowana pod standardowe instancje chmurowe (CPU-based)         | **Dlaczego:** Budżet nie pozwala na drogie instancje GPU.<br>**Wpływ:** Modele ML muszą być "lekkie" (kwantyzacja, proste regresje) i zoptymalizowane do wnioskowania (inference) na procesorach CPU.                                                                                                              |
 
 #### Ograniczenia organizacyjne
 
-| Kategoria        | Ograniczenie                        | Uwagi                                       |
-|------------------|-------------------------------------|---------------------------------------------|
-| **Zespół**       | 5-7 deweloperów                     | Ograniczona dostępność (projekt uczelniany) |
-| **Czas**         | MVP w 4 miesiące                    | Deadline wynikający z harmonogramu studiów  |
-| **Budżet**       | Brak budżetu na płatne usługi       | Tylko open-source i darmowe tiers           |
-| **Metodyka**     | Scrum, sprinty 2-tygodniowe         | Wymóg przedmiotu                            |
-| **Dokumentacja** | SRS, dokumentacja techniczna w repo | Wymóg oddania projektu                      |
-| **Code Review**  | Wymagane PR z min. 1 review         | Jakość kodu                                 |
+| Kategoria        | Ograniczenie                                       | Uzasadnienie i Wpływ na Realizację                                                                                                                                                                                                                    |
+|------------------|----------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Zespół**       | 5-7 deweloperów                                    | **Dlaczego:** Ograniczone zasoby ludzkie (projekt akademicki).<br>**Wpływ:** Konieczność unikania nadmiernego skomplikowania (Overengineering). Preferowany Modular Monolith zamiast Mikroserwisów, aby uniknąć narzutu komunikacyjnego i DevOps.     |
+| **Czas**         | MVP w 4 miesiące                                   | **Dlaczego:** Sztywny termin administracyjny.<br>**Wpływ:** Rygorystyczna priorytetyzacja (MoSCoW). Funkcje "Nice-to-have" (np. wideorozmowy) są wycinane lub zastępowane integracjami. Dług technologiczny jest akceptowalny, jeśli przyspiesza MVP. |
+| **Budżet**       | Minimalizacja kosztów operacyjnych (OpEx)          | **Dlaczego:** Brak finansowania zewnętrznego.<br>**Wpływ:** Wykluczenie płatnych usług SaaS (np. Auth0, płatne API map). System musi być samowystarczalny (Self-hosted) i korzystać z rozwiązań Open Source.                                          |
+| **Metodyka**     | Praca w iteracjach (Agile/Scrum)                   | **Dlaczego:** Wymóg elastyczności i częstej weryfikacji postępów.<br>**Wpływ:** Architektura musi wspierać częste wdrożenia (CI/CD). Kod musi być testowalny automatycznie, aby uniknąć regresji przy szybkich zmianach.                              |
+| **Dokumentacja** | SRS oraz dokumentacja techniczna jako "Code-Close" | **Dlaczego:** Wymóg łatwego przekazania projektu.<br>**Wpływ:** Dokumentacja API (np. Swagger) generowana automatycznie z kodu. Diagramy architektury jako kod (np. Mermaid.js) w repozytorium.                                                       |
+| **Jakość kodu**  | Obowiązkowe Code Review i procesy CI/CD            | **Dlaczego:** Zespół ma różny poziom doświadczenia.<br>**Wpływ:** Wymuszenie reguł "Branch protection". Pipeline CI blokuje merge, jeśli testy nie przechodzą lub linter wykrywa błędy, co spowalnia proces, ale zwiększa stabilność.                 |
 
 #### Ograniczenia prawne i środowiskowe
 
-| Kategoria                | Ograniczenie                    | Wpływ na system                               |
-|--------------------------|---------------------------------|-----------------------------------------------|
-| **RODO (GDPR)**          | Pełna zgodność                  | Szyfrowanie danych, prawo do usunięcia, zgody |
-| **RODO - retencja**      | Dane kandydatów max 2 lata      | Automatyczne usuwanie danych                  |
-| **RODO - dostęp**        | Prawo dostępu do swoich danych  | Eksport danych użytkownika                    |
-| **Kodeks Pracy**         | Zgodność z polskim prawem pracy | Wzory umów, okresy wypowiedzenia              |
-| **Podpis elektroniczny** | eIDAS - kwalifikowany podpis    | Integracja z dostawcą podpisu                 |
-| **Accessibility**        | WCAG 2.1 AA                     | Dostępność dla osób z niepełnosprawnościami   |
-| **Regulacje uczelniane** | Projekt akademicki              | Kod jako własność intelektualna studentów     |
+| Kategoria                  | Ograniczenie                                  | Uzasadnienie i Wpływ na Architekturę                                                                                                                                                                                                                     |
+|----------------------------|-----------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **RODO (GDPR)**            | Pełna zgodność (Privacy by Design & Default)  | **Dlaczego:** Wysokie ryzyko prawne przy przetwarzaniu danych osobowych.<br>**Wpływ:** Implementacja "Soft Delete" (ukrywanie zamiast usuwania) dla audytowalności, szyfrowanie kolumn wrażliwych w bazie, obowiązkowe logi dostępu do danych osobowych. |
+| **Retencja danych**        | Mechanizmy automatycznego cyklu życia danych  | **Dlaczego:** Dane kandydatów nie mogą być trzymane w nieskończoność.<br>**Wpływ:** Wdrożenie procesów w tle (Cron Jobs), które cyklicznie anonimizują lub usuwają stare rekordy zgodnie z polityką firmy.                                               |
+| **Prawo dostępu**          | Interfejsy eksportu danych (Data Portability) | **Dlaczego:** Prawo użytkownika do przenoszenia danych.<br>**Wpływ:** Konieczność stworzenia endpointów API agregujących dane z różnych modułów do jednego pliku JSON/XML.                                                                               |
+| **Regulacje HR**           | Zgodność z lokalnym prawem pracy              | **Dlaczego:** System musi być legalny w użyciu.<br>**Wpływ:** Sztywna walidacja reguł biznesowych (np. minimalne okresy wypowiedzenia) zaszyta w logice backendu, której nie można obejść przez UI.                                                      |
+| **Podpis elektroniczny**   | Zgodność ze standardami (np. eIDAS)           | **Dlaczego:** Umowy muszą mieć moc prawną.<br>**Wpływ:** System nie implementuje kryptografii podpisu samodzielnie, lecz działa jako pośrednik (Proxy) do certyfikowanego dostawcy usług zaufania.                                                       |
+| **Dostępność (A11y)**      | Zgodność z wytycznymi WCAG 2.1 (poziom AA)    | **Dlaczego:** Zapobieganie wykluczeniu cyfrowemu.<br>**Wpływ:** Frontend musi obsługiwać nawigację klawiaturą, czytniki ekranowe (ARIA labels) i odpowiedni kontrast. Testy automatyczne UI (np. Lighthouse) w pipeline CI.                              |
+| **Własność intelektualna** | Czystość licencyjna                           | **Dlaczego:** Unikanie roszczeń prawnych.<br>**Wpływ:** Automatyczne skanowanie zależności (SCA) w poszukiwaniu bibliotek z licencjami wirusowymi (np. GPL) w procesie budowania aplikacji.                                                              |
 
 ### 2.4. Założenia Projektowe
 
 #### Założenia biznesowe
 
-| ID        | Założenie                                                  | Ryzyko jeśli nieprawdziwe                                        |
-|-----------|------------------------------------------------------------|------------------------------------------------------------------|
-| **ZB-01** | Firma docelowa zatrudnia 100-1000 pracowników              | Za mała firma = zbędne funkcje; za duża = problemy wydajnościowe |
-| **ZB-02** | Istnieje dział HR z min. 2 osobami                         | Brak HR = brak użytkowników systemu                              |
-| **ZB-03** | Firma prowadzi aktywną rekrutację (min. 5 wakatów/miesiąc) | Brak rekrutacji = moduł nieużywany                               |
-| **ZB-04** | Pracownicy mają dostęp do komputera/smartfona              | Brak dostępu = brak adopcji                                      |
-| **ZB-05** | Firma ma już podstawowe systemy IT (email, AD)             | Brak = problemy z integracją                                     |
+| ID        | Założenie                                                  | Uzasadnienie i Wpływ na Architekturę                                                                                                                                                                                                           |
+|-----------|------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **ZB-01** | Organizacja docelowa to MŚP (100-1000 pracowników)         | **Dlaczego:** Skala definiuje wymagania niefunkcjonalne.<br>**Wpływ:** Skalowalność wertykalna (dołożenie RAM/CPU) jest wystarczająca na start. Brak konieczności implementacji skomplikowanego shardingu bazy danych czy Kubernetes na start. |
+| **ZB-02** | W organizacji istnieje rola lub dział odpowiedzialny za HR | **Dlaczego:** System potrzebuje "super-użytkownika".<br>**Wpływ:** Konieczność budowy zaawansowanego panelu administracyjnego z szerokimi uprawnieniami, oddzielonego od widoku pracownika.                                                    |
+| **ZB-03** | Organizacja prowadzi ciągłe procesy rekrutacyjne           | **Dlaczego:** Uzasadnia inwestycję w moduł ATS.<br>**Wpływ:** Moduł rekrutacji jest traktowany jako "Core Domain" w architekturze, z największym priorytetem wydajnościowym i dostępnością.                                                    |
+| **ZB-04** | Pracownicy posiadają dostęp do infrastruktury cyfrowej     | **Dlaczego:** System ma być dostępny dla wszystkich.<br>**Wpływ:** Interfejs musi być responsywny (RWD/Mobile First), aby umożliwić dostęp z telefonów prywatnych lub służbowych bez dedykowanej aplikacji natywnej.                           |
+| **ZB-05** | Organizacja posiada centralny system tożsamości            | **Dlaczego:** Bezpieczeństwo i wygoda logowania.<br>**Wpływ:** Architektura autoryzacji oparta na standardach federacyjnych (SAML/OIDC). System nie przechowuje haseł pracowników, polega na tokenach z IdP.                                   |
 
 #### Założenia techniczne
 
-| ID        | Założenie                                                                                            | Ryzyko jeśli nieprawdziwe               |
-|-----------|------------------------------------------------------------------------------------------------------|-----------------------------------------|
-| **ZT-01** | Użytkownicy korzystają z nowoczesnych przeglądarek (Chrome, Firefox, Edge - ostatnie 2 wersje)       | Stare przeglądarki = problemy z UI      |
-| **ZT-02** | Dostępne stabilne łącze internetowe min. 10 Mbps                                                     | Wolne łącze = timeout przy uploadzie CV |
-| **ZT-03** | CV są w formatach PDF/DOCX/DOC                                                                       | Inne formaty = błędy parsowania         |
-| **ZT-04** | Dostępna integracja OAuth2 z firmowym IdP                                                            | Brak = osobne loginy, security risk     |
-| **ZT-05** | Elasticsearch dostępny jako managed service lub self-hosted                                          | Brak = brak wyszukiwania semantycznego  |
+| ID        | Założenie                                                  | Uzasadnienie i Wpływ na Architekturę                                                                                                                                                                                                       |
+|-----------|------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **ZT-01** | Użytkownicy końcowi korzystają z nowoczesnych przeglądarek | **Dlaczego:** Koszt wspierania starych technologii (IE11) jest zbyt wysoki.<br>**Wpływ:** Możliwość użycia nowoczesnych API przeglądarkowych (Grid Layout, WebSockets, LocalStorage) bez tworzenia skomplikowanych obejść (polyfills).     |
+| **ZT-02** | Dostępne stabilne łącze internetowe                        | **Dlaczego:** Aplikacje SPA wymagają pobrania kodu startowego.<br>**Wpływ:** Brak konieczności pełnego trybu "Offline-first". Implementacja mechanizmów "Retry" przy przesyłaniu dużych plików CV w przypadku chwilowej utraty połączenia. |
+| **ZT-03** | Dokumenty wejściowe (CV) są w formatach parsowalnych       | **Dlaczego:** Tekst jest łatwiejszy do analizy niż obraz.<br>**Wpływ:** Moduł parsowania opiera się na ekstrakcji tekstu i metadanych. Brak konieczności wdrażania ciężkich i drogich rozwiązań OCR (Computer Vision) w MVP.               |
+| **ZT-04** | Infrastruktura klienta umożliwia federację tożsamości      | **Dlaczego:** Centralizacja zarządzania dostępem.<br>**Wpływ:** System musi implementować wzorzec "Service Provider" dla protokołów SAML/OAuth, delegując uwierzytelnianie na zewnątrz.                                                    |
+| **ZT-05** | Dostępność zasobów do uruchomienia silnika wyszukiwania    | **Dlaczego:** Wyszukiwanie semantyczne wymaga pamięci RAM.<br>**Wpływ:** Architektura musi przewidywać osobny kontener/usługę dla silnika wyszukiwania (np. Elasticsearch), co zwiększa minimalne wymagania sprzętowe hostingu.            |
 
 #### Założenia dotyczące użytkowników
 
-| ID        | Założenie                                               | Ryzyko jeśli nieprawdziwe                  |
-|-----------|---------------------------------------------------------|--------------------------------------------|
-| **ZU-01** | HR i menedżerowie przejdą szkolenie z systemu (min. 2h) | Brak szkolenia = niska adopcja             |
-| **ZU-02** | Kandydaci są przyzwyczajeni do portali rekrutacyjnych   | Nieintuicyjny UX = porzucone aplikacje     |
-| **ZU-03** | Pracownicy będą aktywnie korzystać z systemu feedbacku  | Brak adopcji = puste metryki               |
-| **ZU-04** | Menedżerowie będą prowadzić regularne 1:1               | Brak spotkań = nieaktualne dane w systemie |
+| ID        | Założenie                                                      | Uzasadnienie i Wpływ na Architekturę                                                                                                                                                                                                      |
+|-----------|----------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **ZU-01** | Użytkownicy administracyjni (HR) posiadają kompetencje cyfrowe | **Dlaczego:** Pozwala uniknąć nadmiernego upraszczania profesjonalnych narzędzi.<br>**Wpływ:** Interfejs dla HR może być gęsty w informacje (dashboardy, tabele), priorytetyzując efektywność pracy nad prostotą (Power User UX).         |
+| **ZU-02** | Kandydaci akceptują w pełni cyfrową ścieżkę aplikacji          | **Dlaczego:** Minimalizacja papierologii.<br>**Wpływ:** Skrajny minimalizm formularzy aplikacyjnych (UX) i walidacja w czasie rzeczywistym, aby zminimalizować współczynnik porzuceń (Drop-off rate).                                     |
+| **ZU-03** | Pracownicy są kulturowo gotowi na system feedbacku             | **Dlaczego:** System potrzebuje danych wejściowych od ludzi.<br>**Wpływ:** Implementacja mechanizmów "Nudge" (przypomnień) i grywalizacji, aby technicznie stymulować aktywność użytkowników.                                             |
+| **ZU-04** | Kadra menedżerska będzie aktualizować statusy w systemie       | **Dlaczego:** Raporty są bezużyteczne bez aktualnych danych.<br>**Wpływ:** Integracja z kanałami codziennej pracy (e-mail, komunikatory), aby umożliwić akcje (np. akceptacja urlopu) bez konieczności logowania się do głównego systemu. |
 
 #### Zależności zewnętrzne
 
-| ID        | Zależność                                  | Alternatywa                           |
-|-----------|--------------------------------------------|---------------------------------------|
-| **ZZ-01** | API LinkedIn do publikacji ofert           | Ręczna publikacja                     |
-| **ZZ-02** | Dostawca e-podpisu (np. Autenti, DocuSign) | Podpis offline + skan                 |
-| **ZZ-03** | Serwer SMTP do wysyłki maili               | Zewnętrzny serwis (SendGrid, Mailgun) |
-| **ZZ-04** | SAML                                       | Lokalne konta w systemie              |
-| **ZZ-05** | System kalendarzowy (Google/Outlook)       | Manualnie uzgadniane terminy          |
+| ID        | Zależność                                   | Alternatywa (Plan B)                       | Uzasadnienie i Wpływ na Architekturę                                                                                                                                                 |
+|-----------|---------------------------------------------|--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **ZZ-01** | Publiczne API platform społecznościowych    | Ręczna publikacja i kopiowanie linków      | **Wpływ:** Warstwa abstrakcji dla "Job Boardów". Jeśli API LinkedIn zablokuje dostęp, system przełącza się na generowanie sformatowanego tekstu do ręcznego wklejenia.               |
+| **ZZ-02** | Zewnętrzny dostawca podpisu elektronicznego | Proces hybrydowy (drukuj-podpisz-skanuj)   | **Wpływ:** Architektura sterowana zdarzeniami (Webhooks). System nasłuchuje na statusy dokumentów ("Podpisano", "Odrzucono") z zewnętrznej platformy, zamiast przetwarzać je samemu. |
+| **ZZ-03** | Usługa wysyłki wiadomości transakcyjnych    | Własny serwer pocztowy (trudne utrzymanie) | **Wpływ:** Rozdzielenie generowania treści maila (templating) od samej wysyłki. Możliwość łatwej podmiany providera (np. z SendGrid na AWS SES) w konfiguracji.                      |
+| **ZZ-04** | Korporacyjny Dostawca Tożsamości (IdP)      | Lokalne uwierzytelnianie w bazie danych    | **Wpływ:** Podwójna strategia logowania. System musi obsługiwać zarówno logowanie przez SSO (dla pracowników), jak i lokalne hasła (dla kandydatów/alumni).                          |
+| **ZZ-05** | System kalendarzowy (Google/Outlook)        | Manualne uzgadnianie terminów              | **Wpływ:** Złożona logika synchronizacji dwukierunkowej i obsługi stref czasowych. Konieczność przechowywania tokenów dostępowych (Refresh Tokens) per użytkownik.                   |
 
 ---
 
