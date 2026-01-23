@@ -1,0 +1,300 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shadows}
+\usepackage{fontawesome5}
+\usepackage{caption}
+
+\usetheme[progressbar=frametitle, block=fill]{metropolis}
+
+% Definicja palety kolorów "Vibrant Tech"
+\definecolor{DeepBlue}{HTML}{0F2027}   % Ciemny, elegancki granat
+\definecolor{Highlight}{HTML}{FF0055}   % Neonowy róż (akcent)
+\definecolor{SoftGray}{HTML}{F0F2F5}    % Tło bloków
+
+% Przypisanie kolorów do elementów Beamera
+\setbeamercolor{normal text}{fg=DeepBlue, bg=white}
+\setbeamercolor{alerted text}{fg=Highlight}
+\setbeamercolor{frametitle}{bg=DeepBlue, fg=white}
+\setbeamercolor{progress bar}{fg=Highlight, bg=gray!20}
+\setbeamercolor{itemize item}{fg=Highlight} % Kolor kropek listy
+
+% --- STYL BLOKÓW (ZAOKRĄGLONE) ---
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+
+% Redefinicja standardowych bloków (np. Hipoteza)
+\setbeamertemplate{blocks}[rounded][shadow=true]
+\setbeamercolor{block title}{bg=DeepBlue, fg=white}
+\setbeamercolor{block body}{bg=SoftGray, fg=black}
+
+% Redefinicja bloków alert (np. Luka rynkowa)
+\setbeamercolor{block title alerted}{bg=Highlight, fg=white}
+\setbeamercolor{block body alerted}{bg=red!5, fg=black}
+
+% --- TŁO SLAJDÓW (DESIGN) ---
+\setbeamertemplate{background canvas}{
+    \begin{tikzpicture}[remember picture,overlay]
+        \shade[top color=white, bottom color=gray!5] (current page.north west) rectangle (current page.south east);
+        \fill[Highlight] (current page.south east) circle (20pt);
+        \fill[DeepBlue] (current page.north west) circle (10pt);
+    \end{tikzpicture}
+}
+
+% --- DANE TYTUŁOWE ---
+\title{HRflow: Inteligentna Platforma HR}
+\subtitle{Synteza Koncepcji (SRS) i Plan Sprintu 1 (PoC)}
+\author{}
+\institute{Zarządzanie Projektem Informatycznym - prezentacja podsumowująca}
+\date{}
+
+\begin{document}
+
+% --- SLAJD TYTUŁOWY ---
+{
+\setbeamertemplate{background canvas}[default]
+\setbeamercolor{background canvas}{bg=DeepBlue}
+\begin{frame}[plain]
+    \transboxout[duration=1]
+    \centering
+    \color{white}
+    \Huge \textbf{HRflow} \\
+    \large \textcolor{Highlight}{Inteligentna Platforma HR}
+    \vspace{1cm}
+    
+    \normalsize
+    Synteza Koncepcji (SRS) i Plan Sprintu 1 (PoC)
+    \vspace{1.5cm}
+    
+    \small \textbf{Zespół Projektowy:} \\
+    Adrian Jabłoński, Paweł Gorgolewski, \\
+    Kamil Pierzchała, Łukasz Bartoszek, Bartosz Balawender
+\end{frame}
+}
+
+% =============================================================================
+% CZĘŚĆ I: KONCEPCJA
+% =============================================================================
+\section{Część I: Koncepcja Biznesowa}
+
+% -----------------------------------------------------------------------------
+% CELE PROJEKTU
+% -----------------------------------------------------------------------------
+\begin{frame}{1. Główny Cel i KPI}
+    \transdissolve[duration=0.5]
+    
+    \textbf{Wizja Produktu:}
+    Automatyzacja cyklu życia pracownika w MŚP, pozwalająca skupić się na ludziach, a nie na procesach.
+
+    \vspace{0.5cm}
+    \textbf{Kluczowe Wskaźniki Sukcesu (KPI):}
+    \begin{itemize}
+        \setlength\itemsep{0.8em}
+        \item[\faIcon{clock}] \textbf{Redukcja Time-to-Hire:} Skrócenie czasu rekrutacji z 45 do \textbf{20 dni}.
+        \item[\faIcon{bullseye}] \textbf{Trafność Selekcji:} Wzrost wskaźnika akceptacji na rozmowę (IAR) o +5 p.p.
+        \item[\faIcon{shield-alt}] \textbf{Bezpieczeństwo:} 100\% automatyzacja odbierania dostępów.
+        \item[\faIcon{smile}] \textbf{Candidate Experience:} Osiągnięcie wskaźnika cNPS +50.
+    \end{itemize}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% REALIZACJA CELÓW
+% -----------------------------------------------------------------------------
+\begin{frame}{2. Jak technologia realizuje cele?}
+    \transpush[direction=90]
+    \small
+    \begin{columns}[T, onlytextwidth]
+        \column{0.48\textwidth}
+            \begin{block}{\faIcon{cogs} Kluczowe Funkcjonalności}
+                \begin{itemize}
+                    \item \textbf{Semantic Matching Engine (NLP):}
+                    Analiza CV pod kątem kompetencji pochodnych.
+                    \textit{$\rightarrow$ Cel: Szybsza selekcja.}
+                    \item \textbf{Portal Kandydata:}
+                    Tracking statusu aplikacji na żywo.
+                    \textit{$\rightarrow$ Cel: Wzrost cNPS.}
+                    \item \textbf{Auto-Offboarding:}
+                    Integracja z AD do blokady kont.
+                    \textit{$\rightarrow$ Cel: Bezpieczeństwo.}
+                \end{itemize}
+            \end{block}
+        
+        \column{0.48\textwidth}
+            \begin{alertblock}{\faIcon{tachometer-alt} Atrybuty Jakościowe}
+                \begin{itemize}
+                    \item \textbf{Wydajność:} Cache Redis (czas < 3s).
+                    \item \textbf{RODO:} Szyfrowanie AES-256.
+                    \item \textbf{Skalowalność:} Docker.
+                \end{itemize}
+            \end{alertblock}
+    \end{columns}
+\end{frame}
+
+% --- GANTT CHART ---
+\begin{frame}{Harmonogram Realizacji (Roadmapa)}
+    \transblindsvertical[duration=0.7]
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.95\textwidth, height=0.75\textheight, keepaspectratio]{images/gantt_chart.png}
+        \caption{Plan MVP rozpisany na 3 miesiące (styczeń - kwiecień 2026).}
+    \end{figure}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% INNOWACYJNOŚĆ
+% -----------------------------------------------------------------------------
+\begin{frame}{3. Innowacyjność (USP)}
+    \transglitter[direction=315]
+    \begin{alertblock}{Luka Rynkowa}
+        Brak zaawansowanych narzędzi dostępnych cenowo dla sektora MŚP.
+    \end{alertblock}
+
+    \vspace{0.5cm}
+    \textbf{Nasza przewaga:}
+    \begin{itemize}
+        \item[\faIcon{brain}] \textbf{Demokratyzacja AI:} Matching semantyczny dla średnich firm.
+        \item[\faIcon{link}] \textbf{Holistyczne Podejście:} Połączenie dokumentów, IT i onboardingu.
+        \item[\faIcon{search-plus}] \textbf{Technologia:} NLP zamiast słów kluczowych.
+    \end{itemize}
+\end{frame}
+
+% =============================================================================
+% CZĘŚĆ II: SPRINT 1 (POC)
+% =============================================================================
+\section{Część II: Plan Sprintu 1 (PoC)}
+
+% --- BACKLOG ---
+\begin{frame}{Zakres Prac: Product Backlog}
+    \transblindshorizontal[duration=0.5]
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.95\textwidth, height=0.75\textheight, keepaspectratio]{images/backlog.png}
+        \caption{Priorytetyzacja zadań w Jira na najbliższe sprinty.}
+    \end{figure}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% HIPOTEZA I MODEL
+% -----------------------------------------------------------------------------
+\begin{frame}{1. Hipoteza i Model Matematyczny}
+    \transsplitverticalout
+    \begin{columns}[T, onlytextwidth]
+        \column{0.55\textwidth}
+            \begin{block}{Hipoteza Badawcza}
+                Algorytm NLP dostarczy wynik trafności zgodny z oceną rekrutera w \textbf{minimum 80\%} przypadków.
+            \end{block}
+            \vspace{0.5cm}
+            \textbf{Model (Baseline):}
+            \begin{equation*}
+                Score = \left( \sum w_i \cdot s_i \right) - P
+            \end{equation*}
+        
+        \column{0.40\textwidth}
+            \begin{figure}
+                \centering
+                % Dodajemy cień pod obrazkiem dla efektu 3D
+                \begin{tikzpicture}
+                    \node[drop shadow={opacity=0.5}, inner sep=0pt] {
+                        \includegraphics[width=\textwidth, height=0.7\textheight, keepaspectratio]{images/jira_us_scoring.png}
+                    };
+                \end{tikzpicture}
+                \caption{\scriptsize Szczegóły User Story}
+            \end{figure}
+    \end{columns}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% EKSPERYMENT
+% -----------------------------------------------------------------------------
+\begin{frame}{2. Eksperyment: Kroki w Sprincie}
+    \transwipe[direction=0]
+    \begin{enumerate}
+        \item \textbf{Setup:} Wybór biblioteki NLP (SpaCy vs NLTK).
+        \item \textbf{Prototyp API:} Endpoint JSON (CV + Oferta).
+        \item \textbf{Dane Testowe:} 10 Person (CV idealne, słabe, błędne).
+        \item \textbf{Walidacja:} Porównanie rankingu System vs Rekruter.
+    \end{enumerate}
+\end{frame}
+
+% --- SPRINT BOARD ---
+\begin{frame}{Realizacja: Tablica Sprintu 1}
+    \transboxin[duration=1]
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.95\textwidth, height=0.75\textheight, keepaspectratio]{images/sprint_board.png}
+        \caption{Postęp prac badawczych i wdrożeniowych (Jira Board).}
+    \end{figure}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% KRYTERIA SUKCESU
+% -----------------------------------------------------------------------------
+\begin{frame}{3. Kryteria Sukcesu (DoD dla PoC)}
+    \transdissolve
+    Eksperyment uznamy za udany, jeśli:
+    \vspace{0.3cm}
+    \begin{itemize}
+        \setlength\itemsep{0.8em}
+        \item[\faCheckCircle] \textbf{Trafność:} Algorytm wskaże to samo TOP 3 co człowiek.
+        \item[\faCheckCircle] \textbf{Wydajność:} Czas oceny CV < 3 sekundy.
+        \item[\faCheckCircle] \textbf{Semantyka:} Rozpoznawanie relacji (np. React $\rightarrow$ JS).
+        \item[\faCheckCircle] \textbf{Odporność:} Obsługa błędów formatowania PDF.
+    \end{itemize}
+\end{frame}
+
+% -----------------------------------------------------------------------------
+% SCENARIUSZE DECYZYJNE
+% -----------------------------------------------------------------------------
+\begin{frame}{4. Scenariusze Decyzyjne}
+    \transglitter[direction=90]
+    \begin{columns}[T, onlytextwidth]
+        \column{0.48\textwidth}
+            % Użycie tcolorbox dla ładniejszych kolorowych ramek
+            \begin{tcolorbox}[colback=green!10!white, colframe=green!60!black, title=\faIcon{thumbs-up} \textbf{Scenariusz Pozytywny (GO)}]
+                \textit{Trafność > 80\%}
+                \begin{itemize}
+                    \item Budowa pełnego API i bazy.
+                    \item Frontend: wizualizacja wyników.
+                    \item Dostrajanie wag.
+                \end{itemize}
+            \end{tcolorbox}
+
+        \column{0.48\textwidth}
+            \begin{tcolorbox}[colback=orange!10!white, colframe=orange!80!red, title=\faIcon{random} \textbf{Scenariusz Negatywny (PIVOT)}]
+                \textit{Trafność < 60\%}
+                \begin{itemize}
+                    \item \textbf{Plan B:} Rezygnacja z NLP.
+                    \item Model oparty na tagach.
+                    \item Rozwój manualnej checklisty.
+                \end{itemize}
+            \end{tcolorbox}
+    \end{columns}
+\end{frame}
+
+% --- ZAKOŃCZENIE ---
+{
+\setbeamertemplate{background canvas}[default]
+\setbeamercolor{background canvas}{bg=DeepBlue}
+\begin{frame}[plain]
+    \transboxin
+    \centering
+    \color{white}
+    \vspace{1cm}
+    \huge \textbf{Dziękujemy za uwagę.}
+    \vspace{1cm}
+    
+    \normalsize
+    Gotowi do Sprintu 1.
+    \vspace{1.5cm}
+    
+    \footnotesize
+    \faIcon{question-circle} Czas na pytania.
+\end{frame}
+}
+
+\end{document}Zespół Projektowy
