@@ -812,7 +812,7 @@ Kryteria ukończenia dla każdego zadania w sprincie:
 
 ### 2.3 Tablica Sprintu 1 w Jira
 
-![Tablica Sprintu 1 w Jira](./images/sprint1_board.png)
+![Tablica Sprintu 1 w Jira](./images/sprint_board.png)
 
 ---
 
